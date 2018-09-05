@@ -2,7 +2,6 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 
-mongoose.Promise = global.Promise;
 const app = express();
 
 app.use((req, res, next) => {
