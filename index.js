@@ -9,8 +9,11 @@ const server = express()
 
 const io = socketIO(server);
 
+var count = 0;
+
 io.on('connection', (socket) => {
   console.log('Client connected');
-  io.emit('alert', {meg: "hola"});
+  count++;
+  io.emit('alert', {meg: count});
   socket.on('disconnect', () => console.log('Client disconnected'));
 });
