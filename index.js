@@ -1,6 +1,8 @@
 require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
+const socketIO = require('socket.io');
+const path = require('path');
 
 const app = express();
 
@@ -20,4 +22,11 @@ app.use(bodyParser.json());
 app.listen(process.env.PORT, () => {
   console.log('Server ON, port:', process.env.PORT);
   console.log('The environment is', process.env.NODE_ENV);
+});
+
+const io = socketIO(app);
+
+io.on('connection', (socket) => {
+  console.log('Client connected');
+  socket.on('disconnect', () => console.log('Client disconnected'));
 });
