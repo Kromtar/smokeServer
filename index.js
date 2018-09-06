@@ -12,12 +12,9 @@ const io = socketIO(server);
 
 var count = 0;
 
-const app = express()
-app.use(bodyParser.json());
+server.use(bodyParser.json());
 
-app.listen(process.env.PORT || 8080, function () {
-  console.log('Example app listening on port 3000!');
-});
+
 
 io.on('connection', (socket) => {
   console.log('Client connected');
@@ -26,12 +23,12 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => console.log('Client disconnected'));
 });
 
-app.get('/',function (req,res)  {
+server.get('/',function (req,res)  {
   console.log('Recieved Get');
   res.send('Hello');
 });
 
-app.post('/', function (req, res) {
+server.post('/', function (req, res) {
   count++;
   console.log('Recieved post')
 });
