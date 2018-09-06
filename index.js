@@ -20,7 +20,7 @@ io.on('connection', (socket) => {
 
 server.get('/',(req,res) => res.send('Hello'));
 
-app.post('/', function (req, res) {
+server.post('/', function (req, res) {
   count++;
   console.log('Recieved post')
 });
