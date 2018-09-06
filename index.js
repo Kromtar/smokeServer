@@ -18,7 +18,7 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => console.log('Client disconnected'));
 });
 
-server.get('/',(req,res) => res.send('Hello'));
+server.get('/',function(req,res) => res.send('Hello'));
 
 server.post('/', function (req, res) {
   count++;
