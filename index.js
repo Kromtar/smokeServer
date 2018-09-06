@@ -12,6 +12,10 @@ const io = socketIO(server);
 var count = 0;
 
 const app = express()
+app.listen(3000, function () {
+  console.log('Example app listening on port 3000!');
+});
+
 io.on('connection', (socket) => {
   console.log('Client connected');
   count++;
