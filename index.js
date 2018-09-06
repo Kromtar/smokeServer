@@ -12,6 +12,8 @@ const io = socketIO(server);
 var count = 0;
 
 const app = express()
+app.use(bodyParser.json());
+
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!');
 });
