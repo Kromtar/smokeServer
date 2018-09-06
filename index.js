@@ -17,3 +17,10 @@ io.on('connection', (socket) => {
   io.emit('alert', {meg: count});
   socket.on('disconnect', () => console.log('Client disconnected'));
 });
+
+server.get('/',(req,res) => res.send('Hello'));
+
+app.post('/', function (req, res) {
+  count++;
+  console.log('Recieved post')
+});
