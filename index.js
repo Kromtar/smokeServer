@@ -10,7 +10,7 @@ const server = express()
 
 var count = 0
 
-server.use(bodyParser.json());
+/*server.use(bodyParser.json());
 server.get('/',function (req,res)  {
   console.log('Recieved Get');
   res.send('Hello');
@@ -20,7 +20,7 @@ server.post('/', function (req, res) {
   count++;
   console.log('Recieved post')
 });
-
+*/
 const io = socketIO(server);
 
 
