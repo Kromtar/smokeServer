@@ -11,6 +11,7 @@ const io = socketIO(server);
 
 var count = 0;
 
+const app = express()
 io.on('connection', (socket) => {
   console.log('Client connected');
   count++;
@@ -18,11 +19,11 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => console.log('Client disconnected'));
 });
 
-server.get('/',function(req,res){
+app.get('/',function(req,res){
   res.send('Hello')
 });
 
-server.post('/', function (req, res) {
+app.post('/', function (req, res) {
   count++;
   console.log('Recieved post')
 });
