@@ -26,8 +26,9 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => console.log('Client disconnected'));
 });
 
-app.get('/',function(req,res){
-  res.send('Hello')
+app.get('/',function (req,res)  {
+  console.log('Recieved Get');
+  res.send('Hello');
 });
 
 app.post('/', function (req, res) {
