@@ -15,7 +15,7 @@ var count = 0;
 const app = express()
 app.use(bodyParser.json());
 
-app.listen(8080, function () {
+app.listen(process.env.PORT || 8080, function () {
   console.log('Example app listening on port 3000!');
 });
 
