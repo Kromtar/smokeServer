@@ -17,6 +17,6 @@ io.on('connection', socket => {
   console.log('Client connected');
   count++;
   io.emit('alert', {msg: count});
-  socket.on('qr',function(data){ console.log(data);};
+  socket.on('qr',function(data){ console.log(data);});
   socket.on('disconnect', () => console.log('Client disconnected'));
 })
