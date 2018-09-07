@@ -1,34 +1,21 @@
-const express = require('express');
-const socketIO = require('socket.io');
-const path = require('path');
-const bodyParser = require("body-parser");
+var express = require('express');
+var app = express();
+var server = require('http').createServer(app);
+var io = require('socket.io')(server);
 
 const PORT = process.env.PORT || 3000;
 
-const server = express()
-  .listen(PORT, () => console.log(`Listening on ${ PORT }`));
-
-var count = 0
-
-/*server.use(bodyParser.json());
-server.get('/',function (req,res)  {
-  console.log('Recieved Get');
-  res.send('Hello');
+app.use(express.static(__dirname + '/bower_components'));
+app.get('/', function(req, res,next) {
+    res.sendFile(__dirname + '/index.html');
 });
 
-server.post('/', function (req, res) {
-  count++;
-  console.log('Recieved post')
-});
-*/
-const io = socketIO(server);
+server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
 
-io.on('connection', (socket) => {
+io.on('connection', socket => {
   console.log('Client connected');
   count++;
-  io.emit('alert', {meg: count});
+  io.emit('alert', {msg: count});
   socket.on('disconnect', () => console.log('Client disconnected'));
-});
-
-
+})
