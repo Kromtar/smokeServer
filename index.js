@@ -1,12 +1,16 @@
-const express = require('express')
-const http = require('http')
-const socketIO = require('socket.io')
+var express = require('express');
+var app = express();
+var server = require('http').createServer(app);
+var io = require('socket.io')(server);
 
 const PORT = process.env.PORT || 3000;
 
-const app = express()
-const server = http.createServer(app)
-const io = socketIO(server)
+app.use(express.static(__dirname + '/bower_components'));
+app.get('/', function(req, res,next) {
+    res.sendFile(__dirname + '/index.html');
+});
+
+server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
 var count = 0;
 
@@ -16,5 +20,3 @@ io.on('connection', socket => {
   io.emit('alert', {msg: count});
   socket.on('disconnect', () => console.log('Client disconnected'));
 })
-
-server.listen(PORT, () => console.log(`Listening on port ${PORT}`))
