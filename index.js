@@ -12,7 +12,7 @@ app.get('/', function(req, res,next) {
 
 server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
-
+var count= 0 
 io.on('connection', socket => {
   console.log('Client connected');
   count++;
