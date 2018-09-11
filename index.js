@@ -16,7 +16,7 @@ app.use((req, res, next) => {
 //Formato de consultas
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(bodyParser.text);
+app.use(bodyParser.text());
 
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
