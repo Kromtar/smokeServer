@@ -29,7 +29,7 @@ app.get('/', function(req, res,next) {
 });
 
 app.post('/arduino', function(req,res){
-  console.log(req)
+  console.log(req.body)
   res.send('Llego ! ')
 });
 
