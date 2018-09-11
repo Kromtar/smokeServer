@@ -1,5 +1,7 @@
 var express = require('express');
+var bodyParser = require('body-parser')
 var app = express();
+app.use(bodyParser.text)
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 
@@ -8,6 +10,11 @@ const PORT = process.env.PORT || 3000;
 app.use(express.static(__dirname + '/bower_components'));
 app.get('/', function(req, res,next) {
     res.sendFile(__dirname + '/index.html');
+});
+
+app.post('/arduino', function(req,res){
+  console.log(req)
+  res.send('Llego ! ')
 });
 
 server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
