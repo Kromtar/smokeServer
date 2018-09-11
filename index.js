@@ -23,7 +23,7 @@ var io = require('socket.io')(server);
 
 const PORT = process.env.PORT || 3000;
 
-app.use(express.static(__dirname + '/bower_components'));
+
 app.get('/', function(req, res,next) {
     res.sendFile(__dirname + '/index.html');
 });
