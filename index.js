@@ -19,14 +19,14 @@ httpApp.use(bodyParser.urlencoded({ extended: false }));
 httpApp.use(bodyParser.json());
 httpApp.use(bodyParser.text());
 
-var server = require('http').createServer(app);
-var serverhttp = require('http').createServer(httpApp);
+var server = require('http').createServer(httpApp);
+//var serverhttp = require('http').createServer(httpApp);
 var io = require('socket.io')(server);
 
 const PORT = process.env.PORT || 3000;
 
 
-app.get('/', function(req, res,next) {
+httpApp.get('/', function(req, res,next) {
     res.sendFile(__dirname + '/index.html');
 });
 
@@ -36,7 +36,7 @@ httpApp.post('/arduino', function(req,res){
 });
 
 server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
-serverhttp.listen(3000, () => console.log(`Listening on port ${3000}`));
+//serverhttp.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
 var count= 0 
 io.on('connection', socket => {
