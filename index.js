@@ -1,7 +1,23 @@
 var express = require('express');
 var bodyParser = require('body-parser')
 var app = express();
-app.use(bodyParser.text)
+
+//Control de acceso
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT,DELETE');
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+  );
+  next();
+});
+
+//Formato de consultas
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(bodyParser.text);
+
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 
