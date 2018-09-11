@@ -36,7 +36,7 @@ httpApp.post('/arduino', function(req,res){
 });
 
 server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
-serverhttp.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+serverhttp.listen(3000, () => console.log(`Listening on port ${3000}`));
 
 var count= 0 
 io.on('connection', socket => {
