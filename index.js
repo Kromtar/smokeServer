@@ -60,7 +60,7 @@ io.on('connection', socket => {
   }
   io.emit('test',{msg:count});
   //Listening to 'qr'
-  io.on('qr',function(data){ 
+  socket.on('qr',function(data){
     console.log(data);
   });
   // Listening to 'alertResponse' and if body === false change it to normal1
