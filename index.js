@@ -42,6 +42,11 @@ httpApp.post('/arduino', function(req,res){
   res.send('Llego alerta! ')
 });
 
+httpApp.post('/debug',function(req,res){
+  status = 'NORMAL'
+  res.send('Cambio status a NORMAL')
+});
+
 server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 //serverhttp.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
