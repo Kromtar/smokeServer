@@ -25,24 +25,40 @@ var io = require('socket.io')(server);
 
 const PORT = process.env.PORT || 3000;
 
-
+var  status = 'NORMAL';
+//Display index.html
 httpApp.get('/', function(req, res,next) {
     res.sendFile(__dirname + '/index.html');
 });
-
+// Get end-point arduino and send Status var
+httpApp.get('/arduino', function(req, res) {
+  res.send(status);
+});
+// Post on end-point arduino and print the body, change status and emit alert
 httpApp.post('/arduino', function(req,res){
   console.log(req.body)
-  res.send('Llego ! ')
+  status = 'ALERT'
+  res.send('Llego alerta! ')
+  io.emit('alert', {msg: status});
 });
 
 server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 //serverhttp.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
 var count= 0 
+//Connection counter
 io.on('connection', socket => {
   console.log('Client connected');
   count++;
-  io.emit('alert', {msg: count});
-  socket.on('qr',function(data){ console.log(data);});
   socket.on('disconnect', () => console.log('Client disconnected'));
-})
+});
+//Listening to 'qr' 
+io.on('qr',function(data){ 
+  console.log(data);
+});
+// Listening to 'alertResponse' and if body === false change it to normal
+io.on('alertResponse',function(req,res){
+  if(req.body===false){
+    status = 'NORMAL';
+  }
+});
