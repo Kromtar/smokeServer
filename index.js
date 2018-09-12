@@ -64,7 +64,7 @@ io.on('connection', socket => {
     console.log(data);
   });
   // Listening to 'alertResponse' and if body === false change it to normal1
-  socket.on('alertResponse',function(data){
+  socket.on('alertresponse',function(data){
     console.log(data);
     if(data.response==false){
       status = 'NORMAL';
