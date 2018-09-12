@@ -50,7 +50,7 @@ httpApp.post('/debug',function(req,res){
 server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 //serverhttp.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
-var count= 0 
+var count= 0
 //Connection counter
 io.on('connection', socket => {
   console.log('Client connected');
@@ -59,14 +59,14 @@ io.on('connection', socket => {
     io.emit('alert', {msg: status});
   }
   io.emit('test',{msg:count});
-  //Listening to 'qr' 
+  //Listening to 'qr'
   io.on('qr',function(data){ 
     console.log(data);
   });
   // Listening to 'alertResponse' and if body === false change it to normal1
-  io.on('alertResponse',function(req,res){
-    console.log(req);
-    if(req.body.response==false){
+  io.on('alertResponse',function(data){
+    console.log(data);
+    if(data.response==false){
       status = 'NORMAL';
     }
   });
