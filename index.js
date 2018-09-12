@@ -38,6 +38,7 @@ httpApp.get('/arduino', function(req, res) {
 httpApp.post('/arduino', function(req,res){
   console.log(req.body)
   status = 'ALERT'
+  io.emit('alert', {msg: status});
   res.send('Llego alerta! ')
 });
 
