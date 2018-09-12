@@ -39,7 +39,6 @@ httpApp.post('/arduino', function(req,res){
   console.log(req.body)
   status = 'ALERT'
   res.send('Llego alerta! ')
-  io.emit('alert', {msg: status});
 });
 
 server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
@@ -50,15 +49,19 @@ var count= 0
 io.on('connection', socket => {
   console.log('Client connected');
   count++;
+  if(status == 'ALERT'){
+    io.emit('alert', {msg: status});
+  }
+  io.emit('test',{msg:count});
   socket.on('disconnect', () => console.log('Client disconnected'));
 });
 //Listening to 'qr' 
 io.on('qr',function(data){ 
   console.log(data);
 });
-// Listening to 'alertResponse' and if body === false change it to normal
+// Listening to 'alertResponse' and if body === false change it to normal1
 io.on('alertResponse',function(req,res){
-  if(req.body===false){
+  if(req.body.response==false){
     status = 'NORMAL';
   }
 });
