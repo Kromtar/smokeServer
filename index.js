@@ -54,16 +54,16 @@ io.on('connection', socket => {
     io.emit('alert', {msg: status});
   }
   io.emit('test',{msg:count});
+  //Listening to 'qr' 
+  io.on('qr',function(data){ 
+    console.log(data);
+  });
+  // Listening to 'alertResponse' and if body === false change it to normal1
+  io.on('alertResponse',function(req,res){
+    console.log(req);
+    if(req.body.response==false){
+      status = 'NORMAL';
+    }
+  });
   socket.on('disconnect', () => console.log('Client disconnected'));
-});
-//Listening to 'qr' 
-io.on('qr',function(data){ 
-  console.log(data);
-});
-// Listening to 'alertResponse' and if body === false change it to normal1
-io.on('alertResponse',function(req,res){
-  console.log(req);
-  if(req.body.response==false){
-    status = 'NORMAL';
-  }
 });
