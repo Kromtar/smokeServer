@@ -9,8 +9,10 @@ class SmokeDetector {
  	var status = "NORMAL";
  	var sensors = [];
 
+ 	var i = 0;
  	while(numberOfSensors > 0){
- 		sensors.push(numberOfSensors);
+ 		sensors.push(i);
+ 		i++;
  		numberOfSensors--;
  	} 
 
