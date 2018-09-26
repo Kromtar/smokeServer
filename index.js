@@ -24,7 +24,6 @@ var server = require('http').createServer(httpApp);
 var io = require('socket.io')(server);
 
 const PORT = process.env.PORT || 3000;
-
 var  status = 'NORMAL';
 //Display index.html
 httpApp.get('/', function(req, res,next) {
@@ -42,6 +41,13 @@ httpApp.post('/arduino', function(req,res){
   res.send('Llego alerta! ')
 });
 
+httpApp.post('/arduinoId1', function(req,res){
+  console.log(req.body)
+  status = 'ALERT'
+  io.emit('alert', {msg: status});
+  res.send('Llego alerta! ')
+});
+
 httpApp.post('/debug',function(req,res){
   status = 'NORMAL'
   res.send('Cambio status a NORMAL')
@@ -52,7 +58,8 @@ server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
 var count= 0
 //Connection counter
-io.on('connection', socket => {
+/*
+io.on('connection', function(socket){
   console.log('Client connected');
   count++;
   if(status == 'ALERT'){
@@ -72,3 +79,63 @@ io.on('connection', socket => {
   });
   socket.on('disconnect', () => console.log('Client disconnected'));
 });
+*/
+
+//Crea el objeto que contiene todos los datos de un kit de detectores de humo
+var smokeDetectorTest = new SmokeDetector(1, 'nombre', 1, 3);
+console.log(smokeDetectorTest.sensors[1]);
+io.on('connection', function(socket){
+  console.log('Client connected');
+
+//La aplicacion me envia una pregunta sobre si hay alerta
+  socket.on('appIsThereAlert', function(data){
+    if(smokeDetectorTest.userId === data){
+
+      if (smokeDetectorTest.alert == 'ALERT'){
+
+        socket.emit('appIsThereAlert','ALERT');
+    }
+    else {
+      socket.emit('appIsThereAlert','ALL OK');
+  }
+     
+      }
+  });
+    socket.on('SensorAlert', function(data){
+      if (smokeDetectorTest.kitId === data){
+        smokeDetectorTest.status = 'ALERT'
+
+        socket.broadcast.emit('broadcast', 'askForAlert');
+      }
+  });
+  //Listening to 'qr'
+  socket.on('qr',function(data){
+    console.log(data);
+  });
+  // Listening to 'alertResponse' and if body === false change it to normal1
+  socket.on('alertresponse',function(data){
+    console.log(data);
+    if(data.response==false){
+      status = 'NORMAL';
+    }
+  });
+  socket.on('disconnect', () => console.log('Client disconnected'));
+});
+
+
+class SmokeDetector {
+  constructor(kitId, kitName, userId, numberOfSensors) {  
+
+  this.kitId = kitId;
+  this.kitName = kitName;
+  this.userId = userId;
+  this.numberOfSensors = numberOfSensors;
+  var status = "NORMAL";
+  var sensors = [];
+
+  var i = 0;
+  while(numberOfSensors > 0){
+    sensors.push(i);
+    i++;
+    numberOfSensors--;
+  } 
