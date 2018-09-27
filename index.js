@@ -54,45 +54,23 @@ httpApp.post('/debug',function(req,res){
 });
 
 server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
-//serverhttp.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
-var count= 0
-//Connection counter
-/*
-io.on('connection', function(socket){
-  console.log('Client connected');
-  count++;
-  if(status == 'ALERT'){
-    io.emit('alert', {msg: status});
-  }
-  io.emit('test',{msg:count});
-  //Listening to 'qr'
-  socket.on('qr',function(data){
-    console.log(data);
-  });
-  // Listening to 'alertResponse' and if body === false change it to normal1
-  socket.on('alertresponse',function(data){
-    console.log(data);
-    if(data.response==false){
-      status = 'NORMAL';
-    }
-  });
-  socket.on('disconnect', () => console.log('Client disconnected'));
-});
-*/
+
+/***********************************************************************SOCKET!!***********************************************************************/
+/***********************************************************************SOCKET!!***********************************************************************/
 
 //Crea el objeto que contiene todos los datos de un kit de detectores de humo
 var smokeDetectorTest = new SmokeDetector(1, 'nombre', 1, 3);
 console.log(smokeDetectorTest.sensors[1]);
+
 io.on('connection', function(socket){
   console.log('Client connected');
 
-//La aplicacion me envia una pregunta sobre si hay alerta
+//La aplicacion me envia una pregunta sobre si hay alerta y el servidor responde con ALERT o ALL OK
   socket.on('appIsThereAlert', function(data){
-    if(smokeDetectorTest.userId === data){
+    if(smokeDetectorTest.userId == data){
 
       if (smokeDetectorTest.alert == 'ALERT'){
-
         socket.emit('appIsThereAlert','ALERT');
     }
     else {
@@ -101,11 +79,12 @@ io.on('connection', function(socket){
      
       }
   });
+  //El detector de humo envia una alerta y el servidor le pide a todos los conectados (apps) que envien su nombre para saber que socket son
     socket.on('SensorAlert', function(data){
-      if (smokeDetectorTest.kitId === data){
+      if (smokeDetectorTest.kitId == data){
         smokeDetectorTest.status = 'ALERT'
 
-        socket.broadcast.emit('broadcast', 'askForAlert');
+        socket.broadcast.emit('broadcast', 'askForResponse');
       }
   });
   //Listening to 'qr'
@@ -139,3 +118,28 @@ class SmokeDetector {
     i++;
     numberOfSensors--;
   } 
+
+
+/*
+var count= 0
+io.on('connection', function(socket){
+  console.log('Client connected');
+  count++;
+  if(status == 'ALERT'){
+    io.emit('alert', {msg: status});
+  }
+  io.emit('test',{msg:count});
+  //Listening to 'qr'
+  socket.on('qr',function(data){
+    console.log(data);
+  });
+  // Listening to 'alertResponse' and if body === false change it to normal1
+  socket.on('alertresponse',function(data){
+    console.log(data);
+    if(data.response==false){
+      status = 'NORMAL';
+    }
+  });
+  socket.on('disconnect', () => console.log('Client disconnected'));
+});
+*/
