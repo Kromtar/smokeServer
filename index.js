@@ -62,7 +62,7 @@ server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
 //Variables de prueba antes de hacer la base de datos
 var kitId = 1;
-var kitName = 'Nikola Tesla';
+var kitName = 'Test1';
 var userId = 1;
 var statusTest = "NORMAL";
 var sensors = ['Cosina', 'Garage', 'Dormitorio'];
@@ -77,29 +77,13 @@ var SocketIdList = [];
 io.on('connection', function(socket) {
     console.log('Client connected, ID = ', socket.id);
 
-
     //No se me ocurrio una mejor forma, pero cuando ingresa una app, envia su id, y se agrega a 2 arrays que siempre estan juntos, cuando se ingresa algo a uno, el otro tiene el mismo index
     socket.on('AppLogin', function(data) {
 
         UserIdList.push(data);
         SocketIdList.push(socket.id);
 
-
     });
-
-    //La aplicacion me envia una pregunta sobre si hay alerta y el servidor responde con ALERT o ALL OK
-    socket.on('AppAlert', function(data) {
-        if (userId === data) {
-
-            if (statusTest === 'ALERT') {
-                socket.emit('appIsThereAlert', 'ALERT');
-            } else {
-                socket.emit('appIsThereAlert', 'NORMAL');
-            }
-
-        }
-    });
-
     //El detector de humo envia una alerta y el servidor le pide a todos los conectados (apps) que envien su nombre para saber que socket son
     socket.on('Alert', function(data) {
 
@@ -114,17 +98,38 @@ io.on('connection', function(socket) {
         }
     });
 
-    socket.on('kitStatus', function(data){
+    socket.on('KitStatus', function(data){
 
-      if 
+  
+
+    });
+
+    socket.on('alertResponseConfirm', function(data){
+
+  
+
+    });
+    socket.on('allkitsStatus', function(data){
+
+  
 
     });
 
 
 
 
+    //La aplicacion me envia una pregunta sobre si hay alerta y el servidor responde con ALERT o ALL OK
+    socket.on('AppAlert', function(data) {
+        if (userId === data) {
 
+            if (statusTest === 'ALERT') {
+                socket.emit('appIsThereAlert', 'ALERT');
+            } else {
+                socket.emit('appIsThereAlert', 'NORMAL');
+            }
 
+        }
+    });
 
 
 
