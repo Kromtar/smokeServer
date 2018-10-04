@@ -65,7 +65,9 @@ var kitId = 1;
 var kitName = 'Nikola Tesla';
 var userId = 1;
 var statusTest = "NORMAL";
-var sensors = [1, 2, 3];
+var sensors = ['Cosina', 'Garage', 'Dormitorio'];
+var sensorsStatus = ['bien', 'bien', 'bien'];
+var sensorsInstallation = ['bien', 'mal', 'bien'];
 
 console.log(sensors[1]);
 
@@ -92,16 +94,18 @@ io.on('connection', function(socket) {
             if (statusTest === 'ALERT') {
                 socket.emit('appIsThereAlert', 'ALERT');
             } else {
-                socket.emit('appIsThereAlert', 'ALL OK');
+                socket.emit('appIsThereAlert', 'NORMAL');
             }
 
         }
     });
 
     //El detector de humo envia una alerta y el servidor le pide a todos los conectados (apps) que envien su nombre para saber que socket son
-    socket.on('SensorAlert', function(data) {
+    socket.on('Alert', function(data) {
 
+        statusTest = "ALERT";
         //Ingresar AQUI la alerta a la base de datos (WIP)
+        //Ademas, buscar con la id del kit, el id del usuario
 
         for (i = 0; i < UserIdList.length; i++) {
             if (UserIdList[i] === data) {
@@ -110,7 +114,11 @@ io.on('connection', function(socket) {
         }
     });
 
+    socket.on('kitStatus', function(data){
 
+      if 
+
+    });
 
 
 
