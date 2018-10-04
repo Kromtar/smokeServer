@@ -95,10 +95,10 @@ SocketIdList.push(socket.id);
   });
   //El detector de humo envia una alerta y el servidor le pide a todos los conectados (apps) que envien su nombre para saber que socket son
     socket.on('SensorAlert', function(data){
-      if (smokeDetectorTest.kitId === data){
-        smokeDetectorTest.status = 'ALERT'
+for (i = 0; i < SocketIdList.length; i++){
+  if (SocketIdList[i] === socket.id){
 
-        
+  }
       }
   });
   //Listening to 'qr'
