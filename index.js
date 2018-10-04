@@ -60,7 +60,7 @@ server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 /***********************************************************************SOCKET!!***********************************************************************/
 
 //Crea el objeto que contiene todos los datos de un kit de detectores de humo
-var smokeDetectorTest = new SmokeDetector(1, 'nombre', 1, 3);
+//var smokeDetectorTest = new SmokeDetector(1, 'nombre', 1, 3);
 console.log(smokeDetectorTest.sensors[1]);
 
 var UserIdList = [];
@@ -127,7 +127,7 @@ for (i = 0; i < SocketIdList.length; i++){
     });
 });
 
-
+/*
 class SmokeDetector {
   constructor(kitId, kitName, userId, numberOfSensors) {  
 
@@ -144,7 +144,7 @@ class SmokeDetector {
     i++;
     numberOfSensors--;
   } 
-
+*/
 
 /*
 var count= 0
