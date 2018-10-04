@@ -127,7 +127,7 @@ for (i = 0; i < SocketIdList.length; i++){
     });
 });
 
-/*
+
 class SmokeDetector {
   constructor(kitId, kitName, userId, numberOfSensors) {  
 
@@ -144,7 +144,7 @@ class SmokeDetector {
     i++;
     numberOfSensors--;
   } 
-*/
+
 
 /*
 var count= 0
