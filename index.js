@@ -80,7 +80,6 @@ SocketIdList.push(socket.id);
 });
 
 //La aplicacion me envia una pregunta sobre si hay alerta y el servidor responde con ALERT o ALL OK
-
   socket.on('AppAlert', function(data){
     if(smokeDetectorTest.userId == data){
 
@@ -93,11 +92,15 @@ SocketIdList.push(socket.id);
      
       }
   });
+
   //El detector de humo envia una alerta y el servidor le pide a todos los conectados (apps) que envien su nombre para saber que socket son
     socket.on('SensorAlert', function(data){
-for (i = 0; i < SocketIdList.length; i++){
-  if (SocketIdList[i] === socket.id){
 
+      //Ingresar AQUI la alerta a la base de datos (WIP)
+
+for (i = 0; i < UserIdList.length; i++){
+  if (UserIdList[i] === data){
+    io.to(SocketIdList[i]).emit('ALERT');
   }
       }
   });
