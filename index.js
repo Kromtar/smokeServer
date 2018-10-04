@@ -59,9 +59,15 @@ server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 /***********************************************************************SOCKET!!***********************************************************************/
 /***********************************************************************SOCKET!!***********************************************************************/
 
-//Crea el objeto que contiene todos los datos de un kit de detectores de humo
-//var smokeDetectorTest = new SmokeDetector(1, 'nombre', 1, 3);
-console.log(smokeDetectorTest.sensors[1]);
+
+//Variables de prueba antes de hacer la base de datos
+var kitId = 1;
+var kitName = 'Nikola Tesla';
+var userId = 1;
+var statusTest = "NORMAL";
+var sensors = [1, 2, 3];
+
+console.log(sensors[1]);
 
 var UserIdList = [];
 var SocketIdList = [];
@@ -70,7 +76,7 @@ io.on('connection', function(socket){
   console.log('Client connected, ID = ',socket.id);
 
 
-//No se me ocurrio una mejor forma, pero cuando ingresa una app, envia su id, y se agrega a 2 arrays "hermanos"
+//No se me ocurrio una mejor forma, pero cuando ingresa una app, envia su id, y se agrega a 2 arrays que siempre estan juntos, cuando se ingresa algo a uno, el otro tiene el mismo index
 socket.on('AppLogin', function(data){
 
 UserIdList.push(data);
@@ -81,9 +87,9 @@ SocketIdList.push(socket.id);
 
 //La aplicacion me envia una pregunta sobre si hay alerta y el servidor responde con ALERT o ALL OK
   socket.on('AppAlert', function(data){
-    if(smokeDetectorTest.userId == data){
+    if(userId === data){
 
-      if (smokeDetectorTest.alert == 'ALERT'){
+      if (statusTest === 'ALERT'){
         socket.emit('appIsThereAlert','ALERT');
     }
     else {
@@ -126,25 +132,6 @@ for (i = 0; i < SocketIdList.length; i++){
         console.log('user disconnected');
     });
 });
-
-
-class SmokeDetector {
-  constructor(kitId, kitName, userId, numberOfSensors) {  
-
-  this.kitId = kitId;
-  this.kitName = kitName;
-  this.userId = userId;
-  this.numberOfSensors = numberOfSensors;
-  var status = "NORMAL";
-  var sensors = [];
-
-  var i = 0;
-  while(numberOfSensors > 0){
-    sensors.push(i);
-    i++;
-    numberOfSensors--;
-  } 
-
 
 /*
 var count= 0
