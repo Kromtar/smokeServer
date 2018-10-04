@@ -63,11 +63,25 @@ server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 var smokeDetectorTest = new SmokeDetector(1, 'nombre', 1, 3);
 console.log(smokeDetectorTest.sensors[1]);
 
+var UserIdList = [];
+var SocketIdList = [];
+
 io.on('connection', function(socket){
-  console.log('Client connected');
+  console.log('Client connected, ID = ',socket.id);
+
+
+//No se me ocurrio una mejor forma, pero cuando ingresa una app, envia su id, y se agrega a 2 arrays "hermanos"
+socket.on('AppLogin', function(data){
+
+UserIdList.push(data);
+SocketIdList.push(socket.id);
+
+
+});
 
 //La aplicacion me envia una pregunta sobre si hay alerta y el servidor responde con ALERT o ALL OK
-  socket.on('appIsThereAlert', function(data){
+
+  socket.on('AppAlert', function(data){
     if(smokeDetectorTest.userId == data){
 
       if (smokeDetectorTest.alert == 'ALERT'){
@@ -81,10 +95,10 @@ io.on('connection', function(socket){
   });
   //El detector de humo envia una alerta y el servidor le pide a todos los conectados (apps) que envien su nombre para saber que socket son
     socket.on('SensorAlert', function(data){
-      if (smokeDetectorTest.kitId == data){
+      if (smokeDetectorTest.kitId === data){
         smokeDetectorTest.status = 'ALERT'
 
-        socket.broadcast.emit('broadcast', 'askForResponse');
+        
       }
   });
   //Listening to 'qr'
@@ -98,7 +112,16 @@ io.on('connection', function(socket){
       status = 'NORMAL';
     }
   });
-  socket.on('disconnect', () => console.log('Client disconnected'));
+
+      socket.on('disconnect', function(){
+for (i = 0; i < SocketIdList.length; i++){
+  if (SocketIdList[i] === socket.id){
+    SocketIdList.splice(i, 1);
+    UserIdList.splice(i, 1);
+  }
+}
+        console.log('user disconnected');
+    });
 });
 
 
