@@ -85,8 +85,8 @@ io.on('connection', function(socket) {
 
     });
     //El detector de humo envia una alerta y el servidor revisa sus sockets para ver si esta la app online y envia una alerta, de lo contrario solo lo archiva
-    socket.on('Alert', function(data) {
-
+    socket.on('AlertStatus', function(data) {
+      if (data === 'ALERT'){
         statusTest = 'ALERT';
         //Ingresar AQUI la alerta a la base de datos (WIP)
         //Ademas, buscar con la id del kit, el id del usuario
@@ -96,6 +96,10 @@ io.on('connection', function(socket) {
                 io.to(SocketIdList[i]).emit('AlertMessage', 'ALERT');
             }
         }
+      }
+      else {
+        statusTest = 'NORMAL';
+      }
     });
 
     //La aplicacion revisa el estado de sus sensores
@@ -118,9 +122,9 @@ io.on('connection', function(socket) {
     });
 
     socket.on('alertResponseConfirm', function(data) {
-
-
-
+      if(data === 'NORMAL'){
+        statusTest = 'NORMAL';
+      }
     });
 
     socket.on('alertResponseDeny', function(data) {
