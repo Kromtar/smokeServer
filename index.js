@@ -64,7 +64,7 @@ server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 var kitId = 1;
 var kitName = 'Test1';
 var userId = 1;
-var statusTest = "NORMAL";
+var statusTest = 'NORMAL';
 var sensorsNames = ['Cosina', 'Garage', 'Dormitorio'];
 var sensorsStatus = ['bien', 'bien', 'bien'];
 var sensorsInstallation = ['bien', 'mal', 'bien'];
@@ -87,41 +87,51 @@ io.on('connection', function(socket) {
     //El detector de humo envia una alerta y el servidor revisa sus sockets para ver si esta la app online y envia una alerta, de lo contrario solo lo archiva
     socket.on('Alert', function(data) {
 
-        statusTest = "ALERT";
+        statusTest = 'ALERT';
         //Ingresar AQUI la alerta a la base de datos (WIP)
         //Ademas, buscar con la id del kit, el id del usuario
 
         for (i = 0; i < UserIdList.length; i++) {
             if (UserIdList[i] === data) {
-                io.to(SocketIdList[i]).emit('AlertMessage','ALERT');
+                io.to(SocketIdList[i]).emit('AlertMessage', 'ALERT');
             }
         }
     });
 
-    socket.on('kitStatus', function(data){
-//Ciclo For (revisar la base de datos) (WIP)
-  if (kitId === data){
-    for (i = 0; i < sensorsStatus.length; i++) {
-      if(sensorsStatus[i] === mal){
-        //El servidor responde con una alerta de mensaje, de estado ALERT
-        socket.emit('AlertMessage','ALERT');
-        //El servidor responde con el nombre del sensor que esta en alerta
-        socket.emit('kitStatusResponse', sensorsNames [i]);
-      }
-    }
+    //La aplicacion revisa el estado de sus sensores
+    socket.on('kitStatus', function(data) {
+        //Necesita Ciclo For (revisar la base de datos) (WIP)
+        if (userId === data) {
+            if (statusTest === 'ALERT') {
+                //El servidor responde con una alerta de mensaje, de estado ALERT
+                socket.emit('AlertMessage', 'ALERT');
+                for (i = 0; i < sensorsStatus.length; i++) {
+                    if (sensorsStatus[i] === mal) {
+                        //El servidor responde con el nombre del sensor que esta en alerta
+                        socket.emit('kitStatusResponse', sensorsNames[i]);
+                    }
+                }
+            }
 
-  }
+        }
+
+    });
+
+    socket.on('alertResponseConfirm', function(data) {
+
+
 
     });
 
-    socket.on('alertResponseConfirm', function(data){
+    socket.on('alertResponseDeny', function(data) {
 
-  
+
 
     });
-    socket.on('allkitsStatus', function(data){
 
-  
+    socket.on('allkitsStatus', function(data) {
+
+
 
     });
 
