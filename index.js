@@ -1,8 +1,21 @@
+const mongoose = require('mongoose');
+const PORT = process.env.PORT || 3000;
 var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
-const PORT = process.env.PORT || 3000;
+mongoose.Promise = global.Promise;
+
+/*
+mongoose.connect(process.env.MONGODBURI, { useMongoClient: true }, (err) => {
+  if (err) {
+    throw err;
+  } else {
+    console.log('MongoDb conection OK');
+    http.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+  }
+});
+*/
 
 http.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
@@ -65,5 +78,7 @@ io.on('connection', socket => {
     }
     //console.log('Device disconnected');
   });
-
 });
+
+require('./models/kits');
+require('./models/sensors');
