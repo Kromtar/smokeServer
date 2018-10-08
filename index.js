@@ -7,6 +7,7 @@ var io = require('socket.io')(http);
 
 mongoose.Promise = global.Promise;
 
+/*
 mongoose.connect(process.env.MONGODBURI, { useMongoClient: true }, (err) => {
   if (err) {
     throw err;
@@ -15,6 +16,9 @@ mongoose.connect(process.env.MONGODBURI, { useMongoClient: true }, (err) => {
     http.listen(PORT, () => console.log(`Listening on port ${PORT}`));
   }
 });
+*/
+
+http.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
 var users = {};
 var sensorkits = {};
