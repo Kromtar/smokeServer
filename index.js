@@ -1,74 +1,69 @@
-var express = require('express');
-var bodyParser = require('body-parser')
-var app = express();
-var httpApp = express();
-
-//Control de acceso
-httpApp.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT,DELETE');
-  res.header(
-    'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept, Authorization'
-  );
-  next();
-});
-
-//Formato de consultas
-httpApp.use(bodyParser.urlencoded({ extended: false }));
-httpApp.use(bodyParser.json());
-httpApp.use(bodyParser.text());
-
-var server = require('http').createServer(httpApp);
-//var serverhttp = require('http').createServer(httpApp);
-var io = require('socket.io')(server);
+var app = require('express')();
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
 
 const PORT = process.env.PORT || 3000;
 
-var  status = 'NORMAL';
-//Display index.html
-httpApp.get('/', function(req, res,next) {
-    res.sendFile(__dirname + '/index.html');
-});
-// Get end-point arduino and send Status var
-httpApp.get('/arduino', function(req, res) {
-  res.send(status);
-});
-// Post on end-point arduino and print the body, change status and emit alert
-httpApp.post('/arduino', function(req,res){
-  console.log(req.body)
-  status = 'ALERT'
-  io.emit('alert', {msg: status});
-  res.send('Llego alerta! ')
-});
+http.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
-httpApp.post('/debug',function(req,res){
-  status = 'NORMAL'
-  res.send('Cambio status a NORMAL')
-});
+var users = {};
+var sensorkits = {};
 
-server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
-//serverhttp.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+require('./fakerResponses');
 
-var count= 0
-//Connection counter
 io.on('connection', socket => {
-  console.log('Client connected');
-  count++;
-  if(status == 'ALERT'){
-    io.emit('alert', {msg: status});
-  }
-  io.emit('test',{msg:count});
-  //Listening to 'qr'
-  socket.on('qr',function(data){
+  //console.log('Device connnect', socket);
+
+  socket.on('loginapp', (data) => {
+    console.log(data.phoneid);
+    users[data.phoneid] = socket;
+  });
+
+  socket.on('loginsensorkit', (data) => {
+    sensorkits[data.sensorid] = socket;
+  });
+
+  socket.on('checkallstatus', (data) => {
+    //Buscar el estado de los kit sensor de "data.phoneid" en la base de datos
+    socket.emit('allKitsStatus', fakeAllKitsStatusResponse);
+  });
+
+  socket.on('alertresponse', (data) => {
+    //Aqui entramos en la db y cambiamos el estado de le
+    //alerta del kit sensor "data.kitID" con la respuesta "data.response"
+    //Luego actualizamos el estado de todos los otros conectados a dicho sensor kit
+    //Y avisamos al sensorkit que tiene que hacer
+    //aqui se ocupa el evento "alertResponseConfirm"
     console.log(data);
   });
-  // Listening to 'alertResponse' and if body === false change it to normal1
-  socket.on('alertresponse',function(data){
-    console.log(data);
-    if(data.response==false){
-      status = 'NORMAL';
+
+  //Aqui va el evento de alerta del sensor
+  socket.on('alertfromsensor', (data) => {
+    //Se actualiza la db
+    //Se buscan las apps conectadas a dicho sensor y se envia el mensaje
+    //"fakerappconnectedtosensor" es unsa respues de la DB falsa con la ids
+    //de los celulares conectados
+    for (user = 0; user < fakerappconnectedtosensor.length; user++){
+      if(users[fakerappconnectedtosensor[user]] !== undefined){
+        users[fakerappconnectedtosensor[user]].emit('alert', fakeAlertResponse);
+      }
     }
   });
-  socket.on('disconnect', () => console.log('Client disconnected'));
+
+  socket.on('disconnect', () => {
+    //Busca si el que se desconecta es una app
+    for(var phoneid in users){
+      if(users[phoneid] === socket){
+        delete users[phoneid];
+      }
+    }
+    //Busca si lo que se desconecta es un sensorkit
+    for(var sensorkitid in sensorkits){
+      if(sensorkits[sensorkitid] === socket){
+        delete sensorkits[sensorkitid];
+      }
+    }
+    //console.log('Device disconnected');
+  });
+
 });
