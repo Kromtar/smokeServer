@@ -1,3 +1,4 @@
+require('dotenv').config();
 const mongoose = require('mongoose');
 const PORT = process.env.PORT || 3000;
 var app = require('express')();
@@ -6,7 +7,6 @@ var io = require('socket.io')(http);
 
 mongoose.Promise = global.Promise;
 
-/*
 mongoose.connect(process.env.MONGODBURI, { useMongoClient: true }, (err) => {
   if (err) {
     throw err;
@@ -15,9 +15,6 @@ mongoose.connect(process.env.MONGODBURI, { useMongoClient: true }, (err) => {
     http.listen(PORT, () => console.log(`Listening on port ${PORT}`));
   }
 });
-*/
-
-http.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
 var users = {};
 var sensorkits = {};
@@ -26,6 +23,8 @@ require('./fakerResponses');
 
 io.on('connection', socket => {
   //console.log('Device connnect', socket);
+
+  io.emit('test', {msg: 'fede'});
 
   socket.on('loginapp', (data) => {
     console.log(data.phoneid);
