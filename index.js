@@ -79,31 +79,32 @@ io.on('connection', function(socket) {
 
     //No se me ocurrio una mejor forma. Cuando ingresa una app, envia su id, y se agrega a 2 arrays que siempre estan juntos, cuando se ingresa algo a uno, el otro tiene el mismo index
     socket.on('AppLogin', function(data) {
-
+        console.log('AppLogin request ', socket.id);
         UserIdList.push(data);
         SocketIdList.push(socket.id);
 
     });
     //El detector de humo envia una alerta y el servidor revisa sus sockets para ver si esta la app online y envia una alerta, de lo contrario solo lo archiva
     socket.on('AlertStatus', function(data) {
-      if (data === 'ALERT'){
-        statusTest = 'ALERT';
-        //Ingresar AQUI la alerta a la base de datos (WIP)
-        //Ademas, buscar con la id del kit, el id del usuario
+        console.log('ALERT request ', socket.id);
+        if (data === 'ALERT') {
+            statusTest = 'ALERT';
+            //Ingresar AQUI la alerta a la base de datos (WIP)
+            //Ademas, buscar con la id del kit, el id del usuario
 
-        for (i = 0; i < UserIdList.length; i++) {
-            if (UserIdList[i] === data) {
-                io.to(SocketIdList[i]).emit('AlertMessage', 'ALERT');
+            for (i = 0; i < UserIdList.length; i++) {
+                if (UserIdList[i] === data) {
+                    io.to(SocketIdList[i]).emit('AlertMessage', 'ALERT');
+                }
             }
+        } else {
+            statusTest = 'NORMAL';
         }
-      }
-      else {
-        statusTest = 'NORMAL';
-      }
     });
 
     //La aplicacion revisa el estado de sus sensores
     socket.on('kitStatus', function(data) {
+        console.log('KitStatus request ', socket.id);
         //Necesita Ciclo For (revisar la base de datos) (WIP)
         if (userId === data) {
             if (statusTest === 'ALERT') {
@@ -122,15 +123,9 @@ io.on('connection', function(socket) {
     });
 
     socket.on('alertResponseConfirm', function(data) {
-      if(data === 'NORMAL'){
-        statusTest = 'NORMAL';
-      }
-    });
-
-    socket.on('alertResponseDeny', function(data) {
-
-
-
+        if (data === 'NORMAL') {
+            statusTest = 'NORMAL';
+        }
     });
 
     socket.on('allkitsStatus', function(data) {
