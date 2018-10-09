@@ -69,8 +69,6 @@ var sensorsNames = ['Cosina', 'Garage', 'Dormitorio'];
 var sensorsStatus = ['bien', 'bien', 'bien'];
 var sensorsInstallation = ['bien', 'mal', 'bien'];
 
-console.log(sensors[1]);
-
 var UserIdList = [];
 var SocketIdList = [];
 
@@ -127,6 +125,7 @@ io.on('connection', function(socket) {
             statusTest = 'NORMAL';
         }
     });
+
 
     socket.on('allkitsStatus', function(data) {
 
