@@ -67,8 +67,9 @@ var userId = 1;
 
 
 var UserIdList = [];
-var SocketIdList = [];
-
+var UserSocketIdList = [];
+var KitIdList = [];
+var KitSocketList = [];
 
 var kitData = {
  "a1234": {
@@ -95,13 +96,20 @@ var kitData = {
 io.on('connection', function(socket) {
     console.log('Client connected, ID = ', socket.id);
 
-    //No se me ocurrio una mejor forma. Cuando ingresa una app, envia su id, y se agrega a 2 arrays que siempre estan juntos, cuando se ingresa algo a uno, el otro tiene el mismo index
-    socket.on('Applogin', function(data) {
+    //Cuando ingresa una app, envia su id, y se agrega a 2 arrays que siempre estan juntos, cuando se ingresa algo a uno, el otro tiene el mismo index
+    socket.on('applogin', function(data) {
         console.log('AppLogin request ', socket.id);
         UserIdList.push(data);
-        SocketIdList.push(socket.id);
+        UserSocketList.push(socket.id);
 
     });
+        socket.on('loginsensorkit', function(data) {
+        console.log('loginsensorkit request ', socket.id);
+        KitIdList.push(data);
+        KitSocketList.push(socket.id);
+
+    });
+
     //El detector de humo envia una alerta y el servidor revisa sus sockets para ver si esta la app online y envia una alerta, de lo contrario solo lo archiva
     socket.on('kitstatus', function(data) {
         console.log('ALERT request ', socket.id);
@@ -112,8 +120,8 @@ io.on('connection', function(socket) {
 
             for (i = 0; i < UserIdList.length; i++) {
                 if (UserIdList[i] === userId) {
-                    io.to(SocketIdList[i]).emit('alert', kitData);
-                    console.log('ALERT SENDED TO ', SocketIdList[i]);
+                    io.to(UserSocketList[i]).emit('alert', kitData);
+                    console.log('ALERT SENDED TO ', UserSocketList[i]);
                 }
             }
         } else {
@@ -146,6 +154,7 @@ io.on('connection', function(socket) {
 
     });
 
+
     //Listening to 'qr'
     socket.on('qr', function(data) {
         console.log(data);
@@ -159,10 +168,16 @@ io.on('connection', function(socket) {
     });
 
     socket.on('disconnect', function() {
-        for (i = 0; i < SocketIdList.length; i++) {
-            if (SocketIdList[i] === socket.id) {
-                SocketIdList.splice(i, 1);
+        for (i = 0; i < UserSocketList.length; i++) {
+            if (UserSocketList[i] === socket.id) {
+                UserSocketList.splice(i, 1);
                 UserIdList.splice(i, 1);
+            }
+        }
+        for (i = 0; i < KitSocketList.length; i++) {
+            if (KitSocketList[i] === socket.id) {
+                KitSocketList.splice(i, 1);
+                KitIdList.splice(i, 1);
             }
         }
         console.log('user disconnected');
