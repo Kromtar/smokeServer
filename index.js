@@ -64,10 +64,7 @@ server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 var kitId = 1;
 var kitName = 'Test1';
 var userId = 1;
-var statusTest = 'NORMAL';
-var sensorsNames = ['Cosina', 'Garage', 'Dormitorio'];
-var sensorsStatus = ['bien', 'mal', 'bien'];
-var sensorsInstallation = ['bien', 'bien', 'bien'];
+
 
 var UserIdList = [];
 var SocketIdList = [];
@@ -109,18 +106,18 @@ io.on('connection', function(socket) {
     socket.on('kitstatus', function(data) {
         console.log('ALERT request ', socket.id);
         if (data === kitId) {
-            statusTest = 'ALERT';
+            kitData.kitstatus = "mal";
             //Ingresar AQUI la alerta a la base de datos (WIP)
             //Ademas, buscar con la id del kit, el id del usuario
 
             for (i = 0; i < UserIdList.length; i++) {
                 if (UserIdList[i] === userId) {
-                    io.to(SocketIdList[i]).emit('AlertMessage', 'ALERT');
+                    io.to(SocketIdList[i]).emit('alert', kitData);
                     console.log('ALERT SENDED TO ', SocketIdList[i]);
                 }
             }
         } else {
-            statusTest = 'NORMAL';
+            kitData.kitstatus = "bien";
         }
     });
 
@@ -129,19 +126,8 @@ io.on('connection', function(socket) {
         console.log('kitstatus request ', socket.id);
         //Necesita Ciclo For (revisar la base de datos)
         if (userId === data) {
-            console.log('ESTADO DE LA ALERTA:', statusTest);
-            if (statusTest === 'ALERT') {
-                //El servidor responde con una alerta de mensaje, de estado ALERT
-                socket.emit('alert', kitData);
-                for (i = 0; i < sensorsStatus.length; i++) {
-                    if (sensorsStatus[i] === 'mal') {
-                        //El servidor responde con el nombre del sensor que esta en alerta
-                        socket.emit('kitStatusResponse', sensorsNames[i]);
-                        console.log('DETECTOR DE HUMO NUMERO: ', i+1);
-                    }
-                }
-            }
-
+            console.log('ESTADO DE LA ALERTA:', kitData.kitstatus);
+            socket.emit('kitstatus', kitData);
         }
 
     });
@@ -159,25 +145,6 @@ io.on('connection', function(socket) {
 
 
     });
-
-
-
-
-    //La aplicacion me envia una pregunta sobre si hay alerta y el servidor responde con ALERT o NORMAL
-    socket.on('appalert', function(data) {
-        if (userId === data) {
-
-            if (statusTest === 'ALERT') {
-                socket.emit('appIsThereAlert', 'ALERT');
-            } else {
-                socket.emit('appIsThereAlert', 'NORMAL');
-            }
-
-        }
-    });
-
-
-
 
     //Listening to 'qr'
     socket.on('qr', function(data) {
