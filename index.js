@@ -142,8 +142,16 @@ io.on('connection', function(socket) {
 
     socket.on('alertresponseconfirm', function(data) {
         if (data === userId) {
-            statusTest = 'NORMAL';
+            kitData.kitstatus = 'bien';
             console.log('ESTADO DE LA ALERTA:', kitData.a1234.kitStatus);
+
+            socket.emit('kitstatus', kitData);
+            for (i = 0; i < KitIdList.length; i++) {
+                if (KitIdList[i] === kitId) {
+                    io.to(KitSocketList[i]).emit('alert', kitData);
+                    console.log('ALERT SENDED TO ', KitSocketList[i]);
+                }
+            }
         }
     });
 
