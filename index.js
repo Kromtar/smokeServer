@@ -66,8 +66,8 @@ var kitName = 'Test1';
 var userId = 1;
 var statusTest = 'NORMAL';
 var sensorsNames = ['Cosina', 'Garage', 'Dormitorio'];
-var sensorsStatus = ['bien', 'bien', 'bien'];
-var sensorsInstallation = ['bien', 'mal', 'bien'];
+var sensorsStatus = ['bien', 'mal', 'bien'];
+var sensorsInstallation = ['bien', 'bien', 'bien'];
 
 var UserIdList = [];
 var SocketIdList = [];
