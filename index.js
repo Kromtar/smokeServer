@@ -104,8 +104,9 @@ io.on('connection', function(socket) {
     //La aplicacion revisa el estado de sus sensores
     socket.on('kitStatus', function(data) {
         console.log('KitStatus request ', socket.id);
-        //Necesita Ciclo For (revisar la base de datos) (WIP)
+        //Necesita Ciclo For (revisar la base de datos)
         if (userId === data) {
+            console.log('ESTADO DE LA ALERTA:', statusTest);
             if (statusTest === 'ALERT') {
                 //El servidor responde con una alerta de mensaje, de estado ALERT
                 socket.emit('AlertMessage', 'ALERT');
@@ -113,7 +114,7 @@ io.on('connection', function(socket) {
                     if (sensorsStatus[i] === 'mal') {
                         //El servidor responde con el nombre del sensor que esta en alerta
                         socket.emit('kitStatusResponse', sensorsNames[i]);
-                        console.log('DETECTOR DE HUMO NUMERO: ', i);
+                        console.log('DETECTOR DE HUMO NUMERO: ', i+1);
                     }
                 }
             }
@@ -123,8 +124,9 @@ io.on('connection', function(socket) {
     });
 
     socket.on('alertResponseConfirm', function(data) {
-        if (data === 'NORMAL') {
+        if (data === userId) {
             statusTest = 'NORMAL';
+            console.log('ESTADO DE LA ALERTA:', statusTest);
         }
     });
 
