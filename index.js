@@ -149,7 +149,7 @@ io.on('connection', function(socket) {
     socket.on('alertresponseconfirm', function(data) {
         if (data === userId) {
             statusTest = 'NORMAL';
-            console.log('ESTADO DE LA ALERTA:', kitData.a1234.kitstatus);
+            console.log('ESTADO DE LA ALERTA:', kitData.a1234.kitStatus);
         }
     });
 
