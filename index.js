@@ -72,18 +72,41 @@ var sensorsInstallation = ['bien', 'bien', 'bien'];
 var UserIdList = [];
 var SocketIdList = [];
 
+
+var kitData = {
+ "a1234": {
+    "kitName": "Test1",
+    "kitStatus": "bien",
+
+    "sensor": {
+
+      "a11234": {
+        "nombre": "Cosina",
+        "status": "bien"
+      },
+
+      "a11235": {
+        "nombre": "Dormitorio",
+        "status": "bien"
+      }
+    }
+  }
+}
+
+
+
 io.on('connection', function(socket) {
     console.log('Client connected, ID = ', socket.id);
 
     //No se me ocurrio una mejor forma. Cuando ingresa una app, envia su id, y se agrega a 2 arrays que siempre estan juntos, cuando se ingresa algo a uno, el otro tiene el mismo index
-    socket.on('AppLogin', function(data) {
+    socket.on('Applogin', function(data) {
         console.log('AppLogin request ', socket.id);
         UserIdList.push(data);
         SocketIdList.push(socket.id);
 
     });
     //El detector de humo envia una alerta y el servidor revisa sus sockets para ver si esta la app online y envia una alerta, de lo contrario solo lo archiva
-    socket.on('AlertStatus', function(data) {
+    socket.on('kitstatus', function(data) {
         console.log('ALERT request ', socket.id);
         if (data === kitId) {
             statusTest = 'ALERT';
@@ -102,14 +125,14 @@ io.on('connection', function(socket) {
     });
 
     //La aplicacion revisa el estado de sus sensores
-    socket.on('kitStatus', function(data) {
-        console.log('KitStatus request ', socket.id);
+    socket.on('kitstatus', function(data) {
+        console.log('kitstatus request ', socket.id);
         //Necesita Ciclo For (revisar la base de datos)
         if (userId === data) {
             console.log('ESTADO DE LA ALERTA:', statusTest);
             if (statusTest === 'ALERT') {
                 //El servidor responde con una alerta de mensaje, de estado ALERT
-                socket.emit('AlertMessage', 'ALERT');
+                socket.emit('alert', kitData);
                 for (i = 0; i < sensorsStatus.length; i++) {
                     if (sensorsStatus[i] === 'mal') {
                         //El servidor responde con el nombre del sensor que esta en alerta
@@ -123,10 +146,10 @@ io.on('connection', function(socket) {
 
     });
 
-    socket.on('alertResponseConfirm', function(data) {
+    socket.on('alertresponseconfirm', function(data) {
         if (data === userId) {
             statusTest = 'NORMAL';
-            console.log('ESTADO DE LA ALERTA:', statusTest);
+            console.log('ESTADO DE LA ALERTA:', kitData.a1234.kitstatus);
         }
     });
 
@@ -141,7 +164,7 @@ io.on('connection', function(socket) {
 
 
     //La aplicacion me envia una pregunta sobre si hay alerta y el servidor responde con ALERT o NORMAL
-    socket.on('AppAlert', function(data) {
+    socket.on('appalert', function(data) {
         if (userId === data) {
 
             if (statusTest === 'ALERT') {
