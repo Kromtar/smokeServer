@@ -93,6 +93,7 @@ io.on('connection', function(socket) {
             for (i = 0; i < UserIdList.length; i++) {
                 if (UserIdList[i] === data) {
                     io.to(SocketIdList[i]).emit('AlertMessage', 'ALERT');
+                    console.log('ALERT SENDED TO ', SocketIdList[i]);
                 }
             }
         } else {
