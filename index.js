@@ -78,7 +78,7 @@ io.on('connection', function(socket) {
     //Cuando ingresa una app, envia su id, y se agrega a 2 arrays que siempre estan juntos, cuando se ingresa algo a uno, el otro tiene el mismo index
     socket.on('applogin', function(data) {
         console.log('AppLogin request ', socket.id);
-        UserIdList.push(data);
+        UserIdList.push(data.phoneid);
         UserSocketList.push(socket);
 
     });
@@ -110,7 +110,7 @@ io.on('connection', function(socket) {
     socket.on('allkitsstatus', function(data) {
         console.log('kitstatus request ', socket.id);
         //Necesita Ciclo For (revisar la base de datos)
-        if (userId === data) {
+        if (userId === data.phoneid) {
             console.log('ESTADO DE LA ALERTA:', kitData.kitstatus);
             socket.emit('kitstatus', kitData);
         }
@@ -118,7 +118,7 @@ io.on('connection', function(socket) {
     });
 
     socket.on('alertresponseconfirm', function(data) {
-        if (data === userId) {
+        if (data.phoneid === userId) {
             kitData.kitstatus = 'bien';
             console.log('ESTADO DE LA ALERTA:', kitData.a1234.kitStatus);
 
