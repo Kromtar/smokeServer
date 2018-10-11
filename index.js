@@ -61,7 +61,7 @@ server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
 
 //Variables de prueba antes de hacer la base de datos
-var kitId = 1;
+var kitId = k1000;
 var kitName = 'Test1';
 var userId = 1;
 
@@ -72,25 +72,23 @@ var KitIdList = [];
 var KitSocketList = [];
 
 var kitData = {
- "a1234": {
-    "kitName": "Test1",
-    "kitStatus": "bien",
+    "k1000": {
+        "kitName": "Nombre kit 1",
+        "kitStatus": "bien",
 
-    "sensor": {
+        "sensor": {
 
-      "a11234": {
-        "nombre": "Cosina",
-        "status": "bien"
-      },
+            "k1000s1": {
+                "nombre": "Sensor 1 del  kit 1",
+                "status": "bien"
+            },
 
-      "a11235": {
-        "nombre": "Dormitorio",
-        "status": "bien"
-      }
+            "k1000s2: {
+            "nombre": "Sensor 2 del kit 1",
+            "status": "bien"
+        }
     }
-  }
 }
-
 
 
 io.on('connection', function(socket) {
@@ -103,8 +101,8 @@ io.on('connection', function(socket) {
         UserSocketList.push(socket);
 
     });
-        socket.on('loginsensorkit', function(data) {
-        console.log('loginsensorkit request ',data);
+    socket.on('loginsensorkit', function(data) {
+        console.log('loginsensorkit request ', data);
         KitIdList.push(data.sensorid);
         KitSocketList.push(socket);
 
@@ -113,20 +111,18 @@ io.on('connection', function(socket) {
     //El detector de humo envia una alerta y el servidor revisa sus sockets para ver si esta la app online y envia una alerta, de lo contrario solo lo archiva
     socket.on('alertfromsensor', function(data) {
         console.log('ALERT request ', socket.id, 'Data =', data);
-        if (data === kitId) {
-            kitData.kitstatus = "mal";
-            //Ingresar AQUI la alerta a la base de datos (WIP)
-            //Ademas, buscar con la id del kit, el id del usuario
 
-            for (i = 0; i < UserIdList.length; i++) {
-                if (UserIdList[i] === userId) {
-                    io.to(UserSocketList[i]).emit('alert', kitData);
-                    console.log('ALERT SENDED TO ', UserSocketList[i]);
-                }
+        //Ingresar AQUI la alerta a la base de datos (WIP)
+        //Ademas, buscar con la id del kit, el id del usuario
+        kitData = data;
+
+        for (i = 0; i < UserIdList.length; i++) {
+            if (UserIdList[i] === userId) {
+                io.to(UserSocketList[i]).emit('alert', kitData);
+                console.log('ALERT SENDED TO ', UserSocketList[i]);
             }
-        } else {
-            kitData.kitstatus = "bien";
         }
+
     });
 
     //La aplicacion revisa el estado de sus sensores
@@ -184,27 +180,3 @@ io.on('connection', function(socket) {
         console.log('user disconnected');
     });
 });
-
-/*
-var count= 0
-io.on('connection', function(socket){
-  console.log('Client connected');
-  count++;
-  if(status == 'ALERT'){
-    io.emit('alert', {msg: status});
-  }
-  io.emit('test',{msg:count});
-  //Listening to 'qr'
-  socket.on('qr',function(data){
-    console.log(data);
-  });
-  // Listening to 'alertResponse' and if body === false change it to normal1
-  socket.on('alertresponse',function(data){
-    console.log(data);
-    if(data.response==false){
-      status = 'NORMAL';
-    }
-  });
-  socket.on('disconnect', () => console.log('Client disconnected'));
-});
-*/
