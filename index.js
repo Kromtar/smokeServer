@@ -77,7 +77,7 @@ io.on('connection', function(socket) {
 
     //Cuando ingresa una app, envia su id, y se agrega a 2 arrays que siempre estan juntos, cuando se ingresa algo a uno, el otro tiene el mismo index
     socket.on('applogin', function(data) {
-        console.log('AppLogin request ', socket.id, 'data = ');
+        console.log('AppLogin request ', socket.id, 'data = ', data);
         UserIdList.push(data.phoneid);
         UserSocketList.push(socket);
 
@@ -117,32 +117,24 @@ io.on('connection', function(socket) {
 
     });
 
-    socket.on('alertresponseconfirm', function(data) {
+    socket.on('alertresponse', function(data) {
         if (data.phoneid === userId) {
-            kitData.kitstatus = 'bien';
-            console.log('ESTADO DE LA ALERTA:', kitData.a1234.kitStatus);
 
-            socket.emit('kitstatus', kitData);
+            console.log('Alert Response From APP =' data);
+
+          /*  socket.emit('kitstatus', kitData);
             for (i = 0; i < KitIdList.length; i++) {
                 if (KitIdList[i] === kitId) {
                     io.to(KitSocketList[i]).emit('alert', kitData);
                     console.log('ALERT SENDED TO ', KitSocketList[i]);
                 }
             }
-        }
+        */}
     });
-
 
     //Listening to 'qr'
     socket.on('qr', function(data) {
         console.log(data);
-    });
-    // Listening to 'alertResponse' and if body === false change it to normal1
-    socket.on('alertresponse', function(data) {
-        console.log(data);
-        if (data.response == false) {
-            status = 'NORMAL';
-        }
     });
 
     socket.on('disconnect', function() {
