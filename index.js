@@ -127,6 +127,7 @@ io.on('connection', function(socket) {
         UserSocketList.push(socket);
 
     });
+    //Misma idea de login pero aplicada a los KITs
     socket.on('loginsensorkit', function(data) {
         console.log('loginsensorkit request ', data);
         KitIdList.push(data.sensorid);
@@ -152,11 +153,14 @@ io.on('connection', function(socket) {
 
     });
 
-    //La aplicacion revisa el estado de sus sensores
+    //La aplicacion revisa la base de datos para saber si hay alertas
     socket.on('checkallstatus', function(data) {
         socket.emit('allkitsstatus',kitInitStatus)
     });
 
+    //La apliicacion envia una respuesta a la alerta
+    //si es positiva se envia solo al detector de humo
+    //si es negativa se envia al detector de humo y devuelta a la aplicacion
     socket.on('alertresponse', function(data) {
 
         console.log('Alert Response From APP =', data);
@@ -171,14 +175,6 @@ io.on('connection', function(socket) {
                 console.log('ALERT SENDED TO ', KitSocketList[i].id);
             }
         }
-        /*  socket.emit('kitstatus', kitData);
-            for (i = 0; i < KitIdList.length; i++) {
-                if (KitIdList[i] === kitId) {
-                    io.to(KitSocketList[i]).emit('alert', kitData);
-                    console.log('ALERT SENDED TO ', KitSocketList[i]);
-                }
-            }
-        */
     });
 
     //Listening to 'qr'
@@ -199,6 +195,6 @@ io.on('connection', function(socket) {
                 KitIdList.splice(i, 1);
             }
         }
-        console.log('user disconnected');
+        console.log('user disconnected', socket.id);
     });
 });
