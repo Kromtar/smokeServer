@@ -120,7 +120,7 @@ io.on('connection', function(socket) {
     socket.on('alertresponse', function(data) {
         if (data.phoneid === userId) {
 
-            console.log('Alert Response From APP =' data);
+            console.log('Alert Response From APP =', data);
 
           /*  socket.emit('kitstatus', kitData);
             for (i = 0; i < KitIdList.length; i++) {
