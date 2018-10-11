@@ -118,8 +118,7 @@ io.on('connection', function(socket) {
     });
 
     socket.on('alertresponse', function(data) {
-        if (data.phoneid === userId) {
-
+        
             console.log('Alert Response From APP =', data);
 
           /*  socket.emit('kitstatus', kitData);
@@ -129,7 +128,7 @@ io.on('connection', function(socket) {
                     console.log('ALERT SENDED TO ', KitSocketList[i]);
                 }
             }
-        */}
+        */
     });
 
     //Listening to 'qr'
