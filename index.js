@@ -125,7 +125,7 @@ io.on('connection', function(socket) {
         for (i = 0; i < KitIdList.length; i++) {
             if (KitIdList[i] === data.kitID) {
                 KitSocketList[i].emit('responsefromserver', data.response);
-                console.log('ALERT SENDED TO ', UserSocketList[i].id);
+                console.log('ALERT SENDED TO ', KitSocketList[i].id);
             }
         }
           /*  socket.emit('kitstatus', kitData);
