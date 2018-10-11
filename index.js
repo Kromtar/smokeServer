@@ -88,33 +88,33 @@ var kitDataOk = {
 }
 
 var kitInitStatus = {
-  "elements": true,
-  "kitsList": {
-    "k1000": {
-      "kitName": 'Nombre kit 1',
-      "kitStatus": 'bien',
-      "sensor": {
-        "k1000s1": {
-          "nombre": 'Sensor 1 del  kit 1',
-          "status": 'bien'
+    "elements": true,
+    "kitsList": {
+        "k1000": {
+            "kitName": 'Nombre kit 1',
+            "kitStatus": 'bien',
+            "sensor": {
+                "k1000s1": {
+                    "nombre": 'Sensor 1 del  kit 1',
+                    "status": 'bien'
+                },
+                "k1000s2": {
+                    "nombre": 'Sensor 2 del kit 1',
+                    "status": 'bien'
+                }
+            }
         },
-        "k1000s2": {
-          "nombre": 'Sensor 2 del kit 1',
-          "status": 'bien'
+        "k2000": {
+            "kitName": 'Nombre kit 2',
+            "kitStatus": 'bien',
+            "sensor": {
+                "k2000s1": {
+                    "nombre": 'Sensor 1 del  kit 2',
+                    "status": 'bien'
+                }
+            }
         }
-      }
-    },
-    "k2000": {
-      "kitName": 'Nombre kit 2',
-      "kitStatus": 'bien',
-      "sensor": {
-        "k2000s1": {
-          "nombre": 'Sensor 1 del  kit 2',
-          "status": 'bien'
-        }
-      }
     }
-  }
 }
 
 io.on('connection', function(socket) {
@@ -155,7 +155,7 @@ io.on('connection', function(socket) {
 
     //La aplicacion revisa la base de datos para saber si hay alertas
     socket.on('checkallstatus', function(data) {
-        socket.emit('allkitsstatus',kitInitStatus)
+        socket.emit('allkitsstatus', kitInitStatus)
     });
 
     //La apliicacion envia una respuesta a la alerta
@@ -171,8 +171,13 @@ io.on('connection', function(socket) {
 
         for (i = 0; i < KitIdList.length; i++) {
             if (KitIdList[i] === data.kitID) {
-                KitSocketList[i].emit('responsefromserver', data.response);
+                if (data.response === "falso") {
+                    KitSocketList[i].emit('responsefromserverfalse', data.response);
+                } else {
+                    KitSocketList[i].emit('responsefromservertrue', data.response);
+                }
                 console.log('ALERT SENDED TO ', KitSocketList[i].id);
+
             }
         }
     });
