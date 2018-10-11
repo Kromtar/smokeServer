@@ -77,7 +77,7 @@ io.on('connection', function(socket) {
 
     //Cuando ingresa una app, envia su id, y se agrega a 2 arrays que siempre estan juntos, cuando se ingresa algo a uno, el otro tiene el mismo index
     socket.on('applogin', function(data) {
-        console.log('AppLogin request ', socket.id);
+        console.log('AppLogin request ', socket.id, 'data = ');
         UserIdList.push(data.phoneid);
         UserSocketList.push(socket);
 
@@ -99,8 +99,8 @@ io.on('connection', function(socket) {
 
         for (i = 0; i < UserIdList.length; i++) {
             if (UserIdList[i] === userId) {
-                io.to(UserSocketList[i]).emit('alert', kitData);
-                console.log('ALERT SENDED TO ', UserSocketList[i]);
+                UserSocketList[i].emit('alert', kitData);
+                console.log('ALERT SENDED TO ', UserSocketList[i].id);
             }
         }
 
