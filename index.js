@@ -57,6 +57,7 @@ io.on('connection', socket => {
     //Se buscan las apps conectadas a dicho sensor y se envia el mensaje
     //"fakerappconnectedtosensor" es unsa respues de la DB falsa con la ids
     //de los celulares conectados
+    console.log("hola");
     for (user = 0; user < fakerappconnectedtosensor.length; user++){
       if(users[fakerappconnectedtosensor[user]] !== undefined){
         users[fakerappconnectedtosensor[user]].emit('alert', fakeAlertResponse);
