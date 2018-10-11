@@ -67,7 +67,7 @@ var userId = 1;
 
 
 var UserIdList = [];
-var UserSocketIdList = [];
+var UserSocketList = [];
 var KitIdList = [];
 var KitSocketList = [];
 
@@ -105,7 +105,7 @@ io.on('connection', function(socket) {
     });
         socket.on('loginsensorkit', function(data) {
         console.log('loginsensorkit request ',data);
-        KitIdList.push(data);
+        KitIdList.push(data.sensorid);
         KitSocketList.push(socket);
 
     });
@@ -170,13 +170,13 @@ io.on('connection', function(socket) {
 
     socket.on('disconnect', function() {
         for (i = 0; i < UserSocketList.length; i++) {
-            if (UserSocketList[i] === socket.id) {
+            if (UserSocketList[i].id === socket.id) {
                 UserSocketList.splice(i, 1);
                 UserIdList.splice(i, 1);
             }
         }
         for (i = 0; i < KitSocketList.length; i++) {
-            if (KitSocketList[i] === socket.id) {
+            if (KitSocketList[i].id === socket.id) {
                 KitSocketList.splice(i, 1);
                 KitIdList.splice(i, 1);
             }
