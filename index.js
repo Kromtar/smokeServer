@@ -121,6 +121,13 @@ io.on('connection', function(socket) {
         
             console.log('Alert Response From APP =', data);
 
+
+        for (i = 0; i < KitIdList.length; i++) {
+            if (KitIdList[i] === data.kitID) {
+                KitSocketList[i].emit('responsefromserver', data.response);
+                console.log('ALERT SENDED TO ', UserSocketList[i].id);
+            }
+        }
           /*  socket.emit('kitstatus', kitData);
             for (i = 0; i < KitIdList.length; i++) {
                 if (KitIdList[i] === kitId) {
