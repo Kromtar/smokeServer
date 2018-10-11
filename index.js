@@ -61,8 +61,6 @@ server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
 
 //Variables de prueba antes de hacer la base de datos
-var kitId = k1000;
-var kitName = 'Test1';
 var userId = 1;
 
 
