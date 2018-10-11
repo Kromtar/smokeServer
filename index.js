@@ -87,6 +87,35 @@ var kitDataOk = {
     }
 }
 
+var kitInitStatus = {
+  "elements": true,
+  "kitsList": {
+    "k1000": {
+      "kitName": 'Nombre kit 1',
+      "kitStatus": 'bien',
+      "sensor": {
+        "k1000s1": {
+          "nombre": 'Sensor 1 del  kit 1',
+          "status": 'bien'
+        },
+        "k1000s2": {
+          "nombre": 'Sensor 2 del kit 1',
+          "status": 'bien'
+        }
+      }
+    },
+    "k2000": {
+      "kitName": 'Nombre kit 2',
+      "kitStatus": 'bien',
+      "sensor": {
+        "k2000s1": {
+          "nombre": 'Sensor 1 del  kit 2',
+          "status": 'bien'
+        }
+      }
+    }
+  }
+}
 
 io.on('connection', function(socket) {
     console.log('Client connected, ID = ', socket.id);
@@ -124,14 +153,8 @@ io.on('connection', function(socket) {
     });
 
     //La aplicacion revisa el estado de sus sensores
-    socket.on('allkitsstatus', function(data) {
-        console.log('kitstatus request ', socket.id);
-        //Necesita Ciclo For (revisar la base de datos)
-        if (userId === data.phoneid) {
-            console.log('ESTADO DE LA ALERTA:', kitData.kitstatus);
-            socket.emit('kitstatus', kitData);
-        }
-
+    socket.on('checkallstatus', function(data) {
+        socket.emit('allkitsstatus',kitInitStatus)
     });
 
     socket.on('alertresponse', function(data) {
