@@ -100,13 +100,13 @@ io.on('connection', function(socket) {
     socket.on('applogin', function(data) {
         console.log('AppLogin request ', socket.id);
         UserIdList.push(data);
-        UserSocketList.push(socket.id);
+        UserSocketList.push(socket);
 
     });
         socket.on('loginsensorkit', function(data) {
-        console.log('loginsensorkit request ', socket.id);
+        console.log('loginsensorkit request ',data);
         KitIdList.push(data);
-        KitSocketList.push(socket.id);
+        KitSocketList.push(socket);
 
     });
 
