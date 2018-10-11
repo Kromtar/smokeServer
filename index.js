@@ -70,6 +70,22 @@ var KitIdList = [];
 var KitSocketList = [];
 
 var kitData = {}
+var kitDataOk = {
+    "k1000": {
+        "kitName": 'Nombre kit 1',
+        "kitStatus": 'bien',
+        "sensor": {
+            "k1000s1": {
+                "nombre": 'Sensor 1 del  kit 1',
+                "status": 'bien'
+            },
+            "k1000s2": {
+                "nombre": 'Sensor 2 del kit 1',
+                "status": 'bien'
+            }
+        }
+    }
+}
 
 
 io.on('connection', function(socket) {
@@ -82,7 +98,7 @@ io.on('connection', function(socket) {
         UserSocketList.push(socket);
 
     });
-    socket.on('caca', function(data) {
+    socket.on('loginsensorkit', function(data) {
         console.log('loginsensorkit request ', data);
         KitIdList.push(data.sensorid);
         KitSocketList.push(socket);
@@ -119,9 +135,12 @@ io.on('connection', function(socket) {
     });
 
     socket.on('alertresponse', function(data) {
-        
-            console.log('Alert Response From APP =', data);
 
+        console.log('Alert Response From APP =', data);
+
+        if (data.response === "falso") {
+            socket.emit('alertresponseconfirm', kitDataOk);
+        }
 
         for (i = 0; i < KitIdList.length; i++) {
             if (KitIdList[i] === data.kitID) {
@@ -129,7 +148,7 @@ io.on('connection', function(socket) {
                 console.log('ALERT SENDED TO ', KitSocketList[i].id);
             }
         }
-          /*  socket.emit('kitstatus', kitData);
+        /*  socket.emit('kitstatus', kitData);
             for (i = 0; i < KitIdList.length; i++) {
                 if (KitIdList[i] === kitId) {
                     io.to(KitSocketList[i]).emit('alert', kitData);
