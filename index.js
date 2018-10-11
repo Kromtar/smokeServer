@@ -82,10 +82,11 @@ io.on('connection', function(socket) {
         UserSocketList.push(socket);
 
     });
-    socket.on('loginsensorkit', function(data) {
+    socket.on('caca', function(data) {
         console.log('loginsensorkit request ', data);
         KitIdList.push(data.sensorid);
         KitSocketList.push(socket);
+
 
     });
 
