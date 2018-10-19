@@ -226,8 +226,8 @@ io.on('connection', function(socket) {
 
         for (i = 0; i < expoTokens.length; i++) {
 
-            if (!Expo.isExpoPushToken(pushToken)) {
-                console.error(`Push token ${pushToken} is not a valid Expo push token`);
+            if (!Expo.isExpoPushToken(expoTokens[i])) {
+                console.error(` is not a valid Expo push token`);
                 continue;
             }
 
