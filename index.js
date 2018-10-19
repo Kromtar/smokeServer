@@ -210,9 +210,9 @@ io.on('connection', function(socket) {
     var expoTokens = [];
 
 
-    socket.on('expologin', function() {
+    socket.on('expologin', function(data) {
         for (i = 0; i < expoTokens.length; i++) {
-            if (data === expoTokens[i]) {
+            if (data.phoneNotification === expoTokens[i]) {
                 return;
             }
         }
