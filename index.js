@@ -3,7 +3,7 @@ var express = require('express');
 var bodyParser = require('body-parser')
 var app = express();
 var httpApp = express();
-let expo = Expo();
+
 
 //Control de acceso
 httpApp.use((req, res, next) => {
