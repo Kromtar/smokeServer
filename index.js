@@ -1,7 +1,10 @@
+import Expo from 'expo-server-sdk';
+
 var express = require('express');
 var bodyParser = require('body-parser')
 var app = express();
 var httpApp = express();
+let expo = new Expo();
 
 //Control de acceso
 httpApp.use((req, res, next) => {
@@ -202,4 +205,40 @@ io.on('connection', function(socket) {
         }
         console.log('user disconnected', socket.id);
     });
+
+
+    //PUSH NOTIFICATION CODE
+    var expoTokens = [];
+
+
+    socket.on('expologin', function(data) {
+        for (i = 0; i < expoTokens.length; i++) {
+            if (data === expoTokens[i]) {
+                return;
+            }
+        }
+        expoTokens.push(data);
+
+    };)
+
+    let messages = [];
+
+    socket.on('expotest', function(data) {
+
+        for (i = 0; i < expoTokens.length; i++) {
+
+            if (!Expo.isExpoPushToken(pushToken)) {
+                console.error(`Push token ${pushToken} is not a valid Expo push token`);
+                continue;
+            }
+
+            messages.push({
+                to: expoTokens[i],
+                sound: 'default',
+                body: 'This is a test notification',
+                data: data,
+            })
+        }
+    };)
+
 });
