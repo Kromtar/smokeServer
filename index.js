@@ -209,7 +209,7 @@ io.on('connection', function(socket) {
     var expoTokens = [];
 
 
-    socket.on('expologin', function(data) {
+    socket.on('expologin', function() {
         for (i = 0; i < expoTokens.length; i++) {
             if (data === expoTokens[i]) {
                 return;
@@ -217,7 +217,7 @@ io.on('connection', function(socket) {
         }
         expoTokens.push(data);
 
-    };)
+    });
 
     let messages = [];
 
@@ -237,6 +237,6 @@ io.on('connection', function(socket) {
                 data: data,
             })
         }
-    };)
+    });
 
 });
