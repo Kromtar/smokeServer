@@ -132,7 +132,7 @@ io.on('connection', function(socket) {
     //Misma idea de login pero aplicada a los KITs
     socket.on('loginsensorkit', function(data) {
         console.log('loginsensorkit request ', data);
-        KitIdList.push(data.sensorid);
+        KitIdList.push(data.kitID);
         KitSocketList.push(socket);
 
 
