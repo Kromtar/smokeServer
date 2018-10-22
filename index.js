@@ -3,7 +3,19 @@ var express = require('express');
 var bodyParser = require('body-parser')
 var app = express();
 var httpApp = express();
+require('dotenv').config();
+const mongoose = require('mongoose');
 
+mongoose.Promise = global.Promise;
+
+mongoose.connect(process.env.MONGODBURI, { useMongoClient: true }, (err) => {
+  if (err) {
+    throw err;
+  } else {
+    console.log('MongoDb conection OK');
+    http.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+  }
+});
 
 //Control de acceso
 httpApp.use((req, res, next) => {
@@ -242,7 +254,7 @@ io.on('connection', function(socket) {
                 to: expoTokens[i],
                 sound: 'default',
                 body: 'This is a test notification',
-                data: data,
+                data: kitDataOk,
             })
         }
     });
