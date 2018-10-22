@@ -136,7 +136,7 @@ io.on('connection', function(socket) {
         KitIdList.push(data.kitID);
         KitSocketList.push(socket);
 
-                for (i = 0; i < expoTokens.length; i++) {
+            for (i = 0; i < expoTokens.length; i++) {
             if (data.phoneNotification === expoTokens[i]) {
                 return;
             }
@@ -145,8 +145,6 @@ io.on('connection', function(socket) {
 
     });
 
-
-    });
 
     //El detector de humo envia una alerta y el servidor revisa sus sockets para ver si esta la app online y envia una alerta, de lo contrario solo lo archiva
     socket.on('alertfromsensor', function(data) {
