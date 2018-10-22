@@ -70,6 +70,7 @@ var UserIdList = [];
 var UserSocketList = [];
 var KitIdList = [];
 var KitSocketList = [];
+var expoTokens = [];
 
 var kitData = {}
 var kitDataOk = {
@@ -134,6 +135,15 @@ io.on('connection', function(socket) {
         console.log('loginsensorkit request ', data);
         KitIdList.push(data.kitID);
         KitSocketList.push(socket);
+
+                for (i = 0; i < expoTokens.length; i++) {
+            if (data.phoneNotification === expoTokens[i]) {
+                return;
+            }
+        }
+        expoTokens.push(data.pushNotification);
+
+    });
 
 
     });
@@ -207,7 +217,6 @@ io.on('connection', function(socket) {
 
 
     //PUSH NOTIFICATION CODE
-    var expoTokens = [];
 
 
     socket.on('expologin', function(data) {
