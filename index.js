@@ -264,7 +264,7 @@ if (!Expo.isExpoPushToken(pushToken)) {
             })
         }
 
-let chunks = expo.chunkPushNotifications(notifications);
+let chunks = expo.chunkPushNotifications(messages);
   (async () => {
     // Send the chunks to the Expo push notification service. There are
     // different strategies you could use. A simple one is to send one chunk at a
