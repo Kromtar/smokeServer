@@ -1,5 +1,4 @@
-import Expo from 'expo-server-sdk';
-//var Expo = require('expo-server-sdk')
+const { Expo } = require('expo-server-sdk');
 var express = require('express');
 var bodyParser = require('body-parser')
 var app = express();
@@ -9,7 +8,6 @@ const mongoose = require('mongoose');
 
 const expo = new Expo();
 mongoose.Promise = global.Promise;
-
 /*
 mongoose.connect(process.env.MONGODBURI, { useMongoClient: true }, (err) => {
   if (err) {
