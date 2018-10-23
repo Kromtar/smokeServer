@@ -6,6 +6,7 @@ var httpApp = express();
 require('dotenv').config();
 const mongoose = require('mongoose');
 
+const expo = new Expo();
 mongoose.Promise = global.Promise;
 
 /*
@@ -241,24 +242,44 @@ io.on('connection', function(socket) {
 
     });
 
-    let messages = [];
 
+   let messages = [];
+
+//POR AHORA ENVIA A TODOS LOS TOKENS QUE TIENE
     socket.on('expotest', function(data) {
 
-        for (i = 0; i < expoTokens.length; i++) {
+        for (let pushToken of expoTokens) {
 
-            if (!Expo.isExpoPushToken(expoTokens[i])) {
-                console.error(` is not a valid Expo push token`);
-                continue;
-            }
+if (!Expo.isExpoPushToken(pushToken)) {
+    console.error(`Push token ${pushToken} is not a valid Expo push token`);
+    continue;
+  }
+
 
             messages.push({
-                to: expoTokens[i],
+                //to: expoTokens[i],
+                to: ExponentPushToken[XXaOgGOOzyU6j0W5aFlgja],
                 sound: 'default',
                 body: 'This is a test notification',
-                data: kitDataOk,
+                data: data,
             })
         }
+
+let chunks = expo.chunkPushNotifications(notifications);
+  (async () => {
+    // Send the chunks to the Expo push notification service. There are
+    // different strategies you could use. A simple one is to send one chunk at a
+    // time, which nicely spreads the load out over time:
+    for (let chunk of chunks) {
+      try {
+        let receipts = await expo.sendPushNotificationsAsync(chunk);
+        console.log(receipts);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  })();
+
     });
 
 });
