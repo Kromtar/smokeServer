@@ -256,8 +256,7 @@ if (!Expo.isExpoPushToken(pushToken)) {
 
 
             messages.push({
-                //to: expoTokens[i],
-                to: ExponentPushToken[XXaOgGOOzyU6j0W5aFlgja],
+                to: expoTokens[i],
                 sound: 'default',
                 body: 'This is a test notification',
                 data: { data },
