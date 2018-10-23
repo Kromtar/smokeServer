@@ -271,6 +271,7 @@ let chunks = expo.chunkPushNotifications(messages);
     // time, which nicely spreads the load out over time:
     for (let chunk of chunks) {
       try {
+        console.log('nani');
         let receipts = await expo.sendPushNotificationsAsync(chunk);
         console.log(receipts);
       } catch (error) {
