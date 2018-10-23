@@ -260,7 +260,7 @@ if (!Expo.isExpoPushToken(pushToken)) {
                 to: ExponentPushToken[XXaOgGOOzyU6j0W5aFlgja],
                 sound: 'default',
                 body: 'This is a test notification',
-                data: data,
+                data: { data },
             })
         }
 
