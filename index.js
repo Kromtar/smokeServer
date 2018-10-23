@@ -1,4 +1,5 @@
-var Expo = require('expo-server-sdk')
+import Expo from 'expo-server-sdk';
+//var Expo = require('expo-server-sdk')
 var express = require('express');
 var bodyParser = require('body-parser')
 var app = express();
