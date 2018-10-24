@@ -13,7 +13,6 @@ mongoose.connect("mongodb://admin1:admin1@ds029541.mlab.com:29541/quiet-journey-
     .then (db => console.log('db connected'))
     .catch (err => console.log(err));
 
-db.colection()
 //Control de acceso
 httpApp.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
