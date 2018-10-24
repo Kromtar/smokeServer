@@ -9,14 +9,9 @@ const mongoose = require('mongoose');
 const expo = new Expo();
 mongoose.Promise = global.Promise;
 
-mongoose.connect("mongodb://admin1:admin1@ds029541.mlab.com:29541/quiet-journey-37928", (err) => {
-  if (err) {
-    throw err;
-  } else {
-    console.log('MongoDb conection OK');
-    http.listen(PORT, () => console.log(`Listening on port ${PORT}`));
-  }
-});
+mongoose.connect("mongodb://admin1:admin1@ds029541.mlab.com:29541/quiet-journey-37928")
+    .then (db => console.log('db connected'))
+    .catch (err => console.log(err));
 
 
 //Control de acceso
