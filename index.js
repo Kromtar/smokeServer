@@ -9,9 +9,10 @@ const mongoose = require('mongoose');
 const expo = new Expo();
 mongoose.Promise = global.Promise;
 
+//coneccion a Mlab (mongoDB)
 mongoose.connect("mongodb://admin1:admin1@ds029541.mlab.com:29541/quiet-journey-37928")
-    .then (db => console.log('db connected'))
-    .catch (err => console.log(err));
+    .then(db => console.log('db connected'))
+    .catch(err => console.log(err));
 
 //Control de acceso
 httpApp.use((req, res, next) => {
@@ -83,7 +84,7 @@ var expoTokens = [];
 var kitData = {}
 var kitDataOk = {
     "k1000": {
-        "kitName": "Nombre kit 1" ,
+        "kitName": "Nombre kit 1",
         "kitStatus": "bien",
         "sensor": {
             "k1000s1": {
@@ -131,13 +132,14 @@ var kitInitStatus = {
 io.on('connection', function(socket) {
     console.log('Client connected, ID = ', socket.id);
 
-    //Cuando ingresa una app, envia su id, y se agrega a 2 arrays que siempre estan juntos, cuando se ingresa algo a uno, el otro tiene el mismo index
+    //Cuando ingresa una app, envia su id, y se agrega a 2 arrays que siempre estan juntos,
+    //cuando se ingresa algo a uno, el otro tiene el mismo index
     socket.on('applogin', function(data) {
         console.log('AppLogin request ', socket.id, 'data = ', data);
         UserIdList.push(data.phoneid);
         UserSocketList.push(socket);
 
-    for (i = 0; i < expoTokens.length; i++) {
+        for (i = 0; i < expoTokens.length; i++) {
             if (data.phoneNotification === expoTokens[i]) {
                 return;
             }
@@ -151,12 +153,13 @@ io.on('connection', function(socket) {
         KitIdList.push(data.kitID);
         KitSocketList.push(socket);
 
-  
+
 
     });
 
 
-    //El detector de humo envia una alerta y el servidor revisa sus sockets para ver si esta la app online y envia una alerta, de lo contrario solo lo archiva
+    //El detector de humo envia una alerta y el servidor revisa sus sockets
+    //para ver si esta la app online y envia una alerta, de lo contrario solo lo archiva
     socket.on('alertfromsensor', function(data) {
         console.log('ALERT request ', socket.id, 'Data =', data);
 
@@ -224,9 +227,10 @@ io.on('connection', function(socket) {
     });
 
 
-    //PUSH NOTIFICATION CODE
+    /***********************************************************************PUSHNOTIFICATION!!***********************************************************************/
+    /***********************************************************************PUSHNOTIFICATION!!***********************************************************************/
 
-
+    //metodo de prueba para ingresar tokens al array expoTokens
     socket.on('expologin', function(data) {
         for (i = 0; i < expoTokens.length; i++) {
             if (data.phoneNotification === expoTokens[i]) {
@@ -238,43 +242,44 @@ io.on('connection', function(socket) {
     });
 
 
-   let messages = [];
+    let messages = [];
 
-//POR AHORA ENVIA A TODOS LOS TOKENS QUE TIENE
+    //envia mensajes a los tokens regristrados en el array expoTokens
+    //POR AHORA ENVIA A TODOS LOS TOKENS QUE TIENE
     socket.on('expotest', function(data) {
 
         for (let pushToken of expoTokens) {
 
-if (!Expo.isExpoPushToken(pushToken)) {
-    console.error(`Push token ${pushToken} is not a valid Expo push token`);
-    continue;
-  }
+            if (!Expo.isExpoPushToken(pushToken)) {
+                console.error(`Push token ${pushToken} is not a valid Expo push token`);
+                continue;
+            }
 
 
             messages.push({
                 to: pushToken,
                 sound: 'default',
                 body: 'This is a test notification',
-                data: {data} ,
+                data: { data },
             })
         }
 
-let chunks = expo.chunkPushNotifications(messages);
-  (async () => {
-    // Send the chunks to the Expo push notification service. There are
-    // different strategies you could use. A simple one is to send one chunk at a
-    // time, which nicely spreads the load out over time:
-    for (let chunk of chunks) {
-      try {
-        console.log('nani');
-        let receipts = await expo.sendPushNotificationsAsync(chunk);
-        console.log(receipts);
-        messages = [];
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  })();
+        let chunks = expo.chunkPushNotifications(messages);
+        (async () => {
+            // Send the chunks to the Expo push notification service. There are
+            // different strategies you could use. A simple one is to send one chunk at a
+            // time, which nicely spreads the load out over time:
+            for (let chunk of chunks) {
+                try {
+                    console.log('nani');
+                    let receipts = await expo.sendPushNotificationsAsync(chunk);
+                    console.log(receipts);
+                    messages = [];
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+        })();
 
     });
 
