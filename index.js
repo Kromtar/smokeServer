@@ -259,7 +259,7 @@ if (!Expo.isExpoPushToken(pushToken)) {
                 to: expoTokens[i],
                 sound: 'default',
                 body: 'This is a test notification',
-                data: { data },
+                data: data ,
             })
         }
 
