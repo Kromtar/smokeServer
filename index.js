@@ -142,7 +142,7 @@ io.on('connection', function(socket) {
                 return;
             }
         }
-        expoTokens.push(data);
+        expoTokens.push(data.phoneNotification);
 
     });
     //Misma idea de login pero aplicada a los KITs
