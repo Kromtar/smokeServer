@@ -9,7 +9,6 @@ const mongoose = require('mongoose');
 const expo = new Expo();
 mongoose.Promise = global.Promise;
 
-//ingresa a Mlab
 mongoose.connect("mongodb://admin1:admin1@ds029541.mlab.com:29541/quiet-journey-37928")
     .then (db => console.log('db connected'))
     .catch (err => console.log(err));
@@ -99,6 +98,35 @@ var kitDataOk = {
     }
 }
 
+var kitInitStatus = {
+    "elements": true,
+    "kitsList": {
+        "k1000": {
+            "kitName": 'Nombre kit 1',
+            "kitStatus": 'bien',
+            "sensor": {
+                "k1000s1": {
+                    "nombre": 'Sensor 1 del  kit 1',
+                    "status": 'bien'
+                },
+                "k1000s2": {
+                    "nombre": 'Sensor 2 del kit 1',
+                    "status": 'bien'
+                }
+            }
+        },
+        "k2000": {
+            "kitName": 'Nombre kit 2',
+            "kitStatus": 'bien',
+            "sensor": {
+                "k2000s1": {
+                    "nombre": 'Sensor 1 del  kit 2',
+                    "status": 'bien'
+                }
+            }
+        }
+    }
+}
 
 io.on('connection', function(socket) {
     console.log('Client connected, ID = ', socket.id);
@@ -197,6 +225,18 @@ io.on('connection', function(socket) {
 
 
     //PUSH NOTIFICATION CODE
+
+
+    socket.on('expologin', function(data) {
+        for (i = 0; i < expoTokens.length; i++) {
+            if (data.phoneNotification === expoTokens[i]) {
+                return;
+            }
+        }
+        expoTokens.push(data);
+
+    });
+
 
    let messages = [];
 
