@@ -142,6 +142,14 @@ io.on('connection', function(socket) {
         console.log('AppLogin request ', socket.id, 'data = ', data);
         UserIdList.push(data.phoneid);
         UserSocketList.push(socket);
+        
+                    for (i = 0; i < expoTokens.length; i++) {
+            if (data.phoneNotification === expoTokens[i]) {
+                return;
+            }
+        }
+        expoTokens.push(data.pushNotification);
+
 
     });
     //Misma idea de login pero aplicada a los KITs
@@ -150,7 +158,6 @@ io.on('connection', function(socket) {
         KitIdList.push(data.kitID);
         KitSocketList.push(socket);
 
-        expoTokens.push(data.pushNotification);
 
     });
 
