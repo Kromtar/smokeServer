@@ -143,7 +143,7 @@ io.on('connection', function(socket) {
         UserIdList.push(data.phoneid);
         UserSocketList.push(socket);
 
-        expoTokens.push(data.pushNotification);
+        expoTokens.push(data.phoneNotification);
 
 
     });
