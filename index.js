@@ -145,7 +145,6 @@ io.on('connection', function(socket) {
 
         expoTokens.push(data.phoneNotification);
 
-
     });
     //Misma idea de login pero aplicada a los KITs
     socket.on('loginsensorkit', function(data) {
@@ -153,6 +152,7 @@ io.on('connection', function(socket) {
         KitIdList.push(data.kitID);
         KitSocketList.push(socket);
 
+  
 
     });
 
@@ -229,7 +229,11 @@ io.on('connection', function(socket) {
 
 
     socket.on('expologin', function(data) {
-
+        for (i = 0; i < expoTokens.length; i++) {
+            if (data.phoneNotification === expoTokens[i]) {
+                return;
+            }
+        }
         expoTokens.push(data);
 
     });
@@ -249,7 +253,7 @@ if (!Expo.isExpoPushToken(pushToken)) {
 
 
             messages.push({
-                to: expoTokens[i],
+                to: pushToken,
                 sound: 'default',
                 body: 'This is a test notification',
                 data: {data} ,
