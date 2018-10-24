@@ -1,7 +1,6 @@
 {
   "name": "smokeserver",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
@@ -11,7 +10,20 @@
   "dependencies": {
     "body-parser": "^1.18.3",
     "dotenv": "^6.0.0",
-    "express": "^4.16.3",
+    "expo-server-sdk": "^3.0.1",
+    "express": "^4.16.4",
+    "jade": "^1.11.0",
+    "mongoose": "^5.3.5",
     "socket.io": "^2.1.1"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vicho2t/smokeServer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vicho2t/smokeServer/issues"
+  },
+  "homepage": "https://github.com/vicho2t/smokeServer#readme",
+  "description": ""
 }
