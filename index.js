@@ -142,12 +142,7 @@ io.on('connection', function(socket) {
         console.log('AppLogin request ', socket.id, 'data = ', data);
         UserIdList.push(data.phoneid);
         UserSocketList.push(socket);
-        
-                    for (i = 0; i < expoTokens.length; i++) {
-            if (data.phoneNotification === expoTokens[i]) {
-                return;
-            }
-        }
+
         expoTokens.push(data.pushNotification);
 
 
@@ -234,11 +229,12 @@ io.on('connection', function(socket) {
 
 
     socket.on('expologin', function(data) {
-        for (i = 0; i < expoTokens.length; i++) {
-            if (data.phoneNotification === expoTokens[i]) {
-                return;
-            }
-        }
+
+        if (!Expo.isExpoPushToken(pushToken)) {
+    console.error(`Push token ${pushToken} is not a valid Expo push token`);
+    continue;
+  }
+
         expoTokens.push(data);
 
     });
