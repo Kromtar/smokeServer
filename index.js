@@ -273,6 +273,7 @@ let chunks = expo.chunkPushNotifications(messages);
         console.log('nani');
         let receipts = await expo.sendPushNotificationsAsync(chunk);
         console.log(receipts);
+        messages = [];
       } catch (error) {
         console.error(error);
       }
