@@ -230,11 +230,6 @@ io.on('connection', function(socket) {
 
     socket.on('expologin', function(data) {
 
-        if (!Expo.isExpoPushToken(pushToken)) {
-    console.error(`Push token ${pushToken} is not a valid Expo push token`);
-    continue;
-  }
-
         expoTokens.push(data);
 
     });
