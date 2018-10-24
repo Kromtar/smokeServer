@@ -13,7 +13,7 @@ mongoose.connect("mongodb://admin1:admin1@ds029541.mlab.com:29541/quiet-journey-
     .then (db => console.log('db connected'))
     .catch (err => console.log(err));
 
-
+db.colection()
 //Control de acceso
 httpApp.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
@@ -138,7 +138,12 @@ io.on('connection', function(socket) {
         UserIdList.push(data.phoneid);
         UserSocketList.push(socket);
 
-        expoTokens.push(data.phoneNotification);
+    for (i = 0; i < expoTokens.length; i++) {
+            if (data.phoneNotification === expoTokens[i]) {
+                return;
+            }
+        }
+        expoTokens.push(data);
 
     });
     //Misma idea de login pero aplicada a los KITs
