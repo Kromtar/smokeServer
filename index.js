@@ -150,11 +150,6 @@ io.on('connection', function(socket) {
         KitIdList.push(data.kitID);
         KitSocketList.push(socket);
 
-            for (i = 0; i < expoTokens.length; i++) {
-            if (data.phoneNotification === expoTokens[i]) {
-                return;
-            }
-        }
         expoTokens.push(data.pushNotification);
 
     });
@@ -259,7 +254,7 @@ if (!Expo.isExpoPushToken(pushToken)) {
                 to: expoTokens[i],
                 sound: 'default',
                 body: 'This is a test notification',
-                data: data ,
+                data: {data} ,
             })
         }
 
