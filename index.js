@@ -8,8 +8,8 @@ const mongoose = require('mongoose');
 
 const expo = new Expo();
 mongoose.Promise = global.Promise;
-/*
-mongoose.connect(process.env.MONGODBURI, { useMongoClient: true }, (err) => {
+
+mongoose.connect("mongodb://admin1:admin1@ds029541.mlab.com:29541/quiet-journey-37928", { useMongoClient: true }, (err) => {
   if (err) {
     throw err;
   } else {
@@ -17,7 +17,7 @@ mongoose.connect(process.env.MONGODBURI, { useMongoClient: true }, (err) => {
     http.listen(PORT, () => console.log(`Listening on port ${PORT}`));
   }
 });
-*/
+
 
 //Control de acceso
 httpApp.use((req, res, next) => {
