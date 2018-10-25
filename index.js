@@ -186,7 +186,7 @@ io.on('connection', function(socket) {
 
   //La aplicacion revisa la base de datos para saber si hay alertas
   socket.on('checkallstatus', function(data) {
-    //socket.emit('allkitsstatus', kitInitStatus)
+    socket.emit('allkitsstatus', kitInitStatus)
   });
 
   //La apliicacion envia una respuesta a la alerta
