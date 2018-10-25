@@ -92,7 +92,7 @@ var expoTokens = [];
 
 var kitData = {}
 var kitDataOk = {
-    "k1000": {
+    "Smoke-1165061640e0": {
         "kitName": "Nombre kit 1",
         "kitStatus": "bien",
         "sensor": {
@@ -174,6 +174,8 @@ io.on('connection', function(socket) {
     //console.log('ALERT request ', socket.id, 'Data =', data);
     //Ingresar AQUI la alerta a la base de datos (WIP)
     //Ademas, buscar con la id del kit, el id del usuario
+
+    //TODO: actualizar aca la DB con el nuevo status de kit
 
     let listOfPhones = await kitsController.phonesFromKit(Object.keys(data)[0]);
     console.log(listOfPhones);
