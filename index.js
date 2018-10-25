@@ -235,25 +235,36 @@ io.on('connection', function(socket) {
       //Entrar y actualizar estado
       await kitsController.updateKit(data.kitID, {kitStatus: "bien" });
 
+      //BUsca el estado actual del kit
       const kitStatus = await kitsController.kitStatus(data.kitID);
 
-      //TODO: Arreglar cosas estaticas
-      socket.emit('alertresponseconfirm', {
-        [kitStatus.kitId]: {
-            "kitName": "Nombre kit 1",
-            "kitStatus": kitStatus.kitStatus,
-            "sensor": {
-                "k1000s1": {
-                    "nombre": "Sensor 1 del  kit 1",
-                    "status": "bien"
-                },
-                "k1000s2": {
-                    "nombre": "Sensor 2 del kit 1",
-                    "status": "bien"
-                }
-            }
+      //Le avisa a todos los telefonos de ese kit que todo esta ok
+      let listOfPhones = await kitsController.phonesFromKit(data.kitID);
+
+      for (i = 0; i < UserIdList.length; i++) {
+        for (phone = 0; phone < listOfPhones.length; phone++) {
+          if (UserIdList[i] === listOfPhones[phone].phoneId) {
+            //TODO: Arreglar cosas estaticas
+            UserSocketList[i].emit('alertresponseconfirm', {
+              [kitStatus.kitId]: {
+                  "kitName": "Nombre kit 1",
+                  "kitStatus": kitStatus.kitStatus,
+                  "sensor": {
+                      "k1000s1": {
+                          "nombre": "Sensor 1 del  kit 1",
+                          "status": "bien"
+                      },
+                      "k1000s2": {
+                          "nombre": "Sensor 2 del kit 1",
+                          "status": "bien"
+                      }
+                  }
+              }
+            });
+          }
         }
-      });
+      }
+
 
     }
     for (i = 0; i < KitIdList.length; i++) {
