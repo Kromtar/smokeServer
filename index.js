@@ -164,6 +164,10 @@ io.on('connection', function(socket) {
     KitSocketList.push(socket);
   });
 
+  socket.on('kitupdatestatus', async function(data){
+    await kitsController.updateKit(Object.keys(data)[0], data[Object.keys(data)[0]]);
+  });
+
   //El detector de humo envia una alerta y el servidor revisa sus sockets
   //para ver si esta la app online y envia una alerta, de lo contrario solo lo archiva
   socket.on('alertfromsensor', async function(data) {
@@ -187,8 +191,34 @@ io.on('connection', function(socket) {
   });
 
   //La aplicacion revisa la base de datos para saber si hay alertas
-  socket.on('checkallstatus', function(data) {
-    socket.emit('allkitsstatus', kitInitStatus)
+  socket.on('checkallstatus', async function(data) {
+    //socket.emit('allkitsstatus', kitInitStatus)
+    const kitsFromPhone = await kitsController.kitsFromPhone(data.phoneId);
+    if(kitsFromPhone.length === 0){
+      socket.emit('allkitsstatus', {"elements": false});
+    }else{
+      console.log(kitsFromPhone[0]);
+      //TODO: Hacer con for por si son varios kits y agregar sensores
+      socket.emit('allkitsstatus', {
+        "elements": true,
+        "kitsList": {
+            [kitsFromPhone[0].kitId]: {
+                "kitName": 'Nombre kit 1',
+                "kitStatus": kitsFromPhone[0].kitStatus,
+                "sensor": {
+                    "k1000s1": {
+                        "nombre": 'Sensor 1 del  kit 1',
+                        "status": 'bien'
+                    },
+                    "k1000s2": {
+                        "nombre": 'Sensor 2 del kit 1',
+                        "status": 'bien'
+                    }
+                }
+            }
+        }
+      });
+    }
   });
 
   //La apliicacion envia una respuesta a la alerta
@@ -214,7 +244,33 @@ io.on('connection', function(socket) {
   //Listening to 'QR'
   socket.on('qr', async function(data) {
     await kitsController.addPhoneToKit(data);
-    socket.emit('allkitsstatus', kitInitStatus);
+    //socket.emit('allkitsstatus', kitInitStatus);
+    const kitsFromPhone = await kitsController.kitsFromPhone(data.phoneId);
+    if(kitsFromPhone.length === 0){
+      socket.emit('allkitsstatus', {"elements": false});
+    }else{
+      console.log(kitsFromPhone[0]);
+      //TODO: Hacer con for por si son varios kits y agregar sensores
+      socket.emit('allkitsstatus', {
+        "elements": true,
+        "kitsList": {
+            [kitsFromPhone[0].kitId]: {
+                "kitName": 'Nombre kit 1',
+                "kitStatus": kitsFromPhone[0].kitStatus,
+                "sensor": {
+                    "k1000s1": {
+                        "nombre": 'Sensor 1 del  kit 1',
+                        "status": 'bien'
+                    },
+                    "k1000s2": {
+                        "nombre": 'Sensor 2 del kit 1',
+                        "status": 'bien'
+                    }
+                }
+            }
+        }
+      });
+    }
   });
 
   socket.on('disconnect', function() {

@@ -69,8 +69,35 @@ async function phonesFromKit(kitID) {
   }
 }
 
+//Updatea el estado de un sensor
+//TODO: Implementar sensores
+async function updateKit(id,data){
+  try{
+    const updatedKit = await Kits.update(
+      {kitId: id},
+      {kitStatus: data.kitStatus}
+    );
+  } catch(err){
+    console.log('Catch', err);
+  }
+}
+
+//Busca todos los kits de un determinado telefono
+async function kitsFromPhone(phoneId){
+  try{
+    const kits = await Kits.find({
+      'phonesSubs.phoneId': phoneId
+    });
+    return kits;
+  } catch(err){
+    console.log('Catch', err);
+  }
+}
+
 module.exports = {
   addPhoneToKit,
   addNewKit,
-  phonesFromKit
+  phonesFromKit,
+  updateKit,
+  kitsFromPhone
 };

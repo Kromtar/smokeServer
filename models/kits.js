@@ -8,6 +8,7 @@ const phonesSchema = new Schema({
 
 const kitsSchema = new Schema({
   kitId: String,
+  kitStatus: String,
   phonesSubs: [phonesSchema]
 });
 
