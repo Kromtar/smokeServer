@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "startDev": "nodemon index.js"
   },
   "author": "",
   "license": "ISC",
@@ -16,7 +17,9 @@
     "mongoose": "^5.3.5",
     "socket.io": "^2.1.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "nodemon": "^1.18.4"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/vicho2t/smokeServer.git"
