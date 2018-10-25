@@ -148,6 +148,8 @@ io.on('connection', function(socket) {
     UserIdList.push(data.phoneid);
     UserSocketList.push(socket);
 
+    //TODO: QUitar esto
+
     for (i = 0; i < expoTokens.length; i++) {
       if (data.phoneNotification === expoTokens[i]) {
         return;
