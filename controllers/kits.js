@@ -94,10 +94,22 @@ async function kitsFromPhone(phoneId){
   }
 }
 
+async function kitStatus(kitId){
+  try{
+    const kit = await Kits.findOne({
+      kitId: kitId
+    });
+    return kit;
+  } catch(err){
+    console.log('Catch', err);
+  }
+}
+
 module.exports = {
   addPhoneToKit,
   addNewKit,
   phonesFromKit,
   updateKit,
-  kitsFromPhone
+  kitsFromPhone,
+  kitStatus
 };

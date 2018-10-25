@@ -228,10 +228,33 @@ io.on('connection', function(socket) {
   //La apliicacion envia una respuesta a la alerta
   //si es positiva se envia solo al detector de humo
   //si es negativa se envia al detector de humo y devuelta a la aplicacion
-  socket.on('alertresponse', function(data) {
+  socket.on('alertresponse', async function(data) {
     console.log('Alert Response From APP =', data);
     if (data.response === "falso") {
-      socket.emit('alertresponseconfirm', kitDataOk);
+
+      //Entrar y actualizar estado
+      await kitsController.updateKit(data.kitID, {kitStatus: "bien" });
+
+      const kitStatus = await kitsController.kitStatus(data.kitID);
+
+      //TODO: Arreglar cosas estaticas
+      socket.emit('alertresponseconfirm', {
+        [kitStatus.kitId]: {
+            "kitName": "Nombre kit 1",
+            "kitStatus": kitStatus.kitStatus,
+            "sensor": {
+                "k1000s1": {
+                    "nombre": "Sensor 1 del  kit 1",
+                    "status": "bien"
+                },
+                "k1000s2": {
+                    "nombre": "Sensor 2 del kit 1",
+                    "status": "bien"
+                }
+            }
+        }
+      });
+
     }
     for (i = 0; i < KitIdList.length; i++) {
       if (KitIdList[i] === data.kitID) {
