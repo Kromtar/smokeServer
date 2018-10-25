@@ -66,7 +66,7 @@ httpApp.post('/debug', function(req, res) {
 });
 
 //Coneccion a Mlab (mongoDB)
-mongoose.connect(process.env.MONGODBURI, { useNewUrlParser: true } , (err) => {
+mongoose.connect(process.env.MONGODBURI, { useMongoClient: true }, (err) => {
   if (err) {
     throw err;
   } else {
