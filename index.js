@@ -176,7 +176,7 @@ io.on('connection', function(socket) {
 
     for (i = 0; i < UserIdList.length; i++) {
       if (UserIdList[i] === listOfPhones[0].phoneId) {
-        UserSocketList[i].emit('alert', data);
+        UserSocketList[i].emit('alert', {data});
         console.log('ALERT SENDED TO ', UserSocketList[i].id);
       }
     }
@@ -186,7 +186,7 @@ io.on('connection', function(socket) {
 
   //La aplicacion revisa la base de datos para saber si hay alertas
   socket.on('checkallstatus', function(data) {
-    socket.emit('allkitsstatus', kitInitStatus)
+    //socket.emit('allkitsstatus', kitInitStatus)
   });
 
   //La apliicacion envia una respuesta a la alerta
