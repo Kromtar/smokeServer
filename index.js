@@ -176,6 +176,7 @@ io.on('connection', function(socket) {
     //Ademas, buscar con la id del kit, el id del usuario
 
     //TODO: actualizar aca la DB con el nuevo status de kit
+    await kitsController.updateKit(Object.keys(data)[0], data[Object.keys(data)[0]]);
 
     let listOfPhones = await kitsController.phonesFromKit(Object.keys(data)[0]);
     console.log(listOfPhones);
