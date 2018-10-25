@@ -88,7 +88,7 @@ var UserIdList = [];
 var UserSocketList = [];
 var KitIdList = [];
 var KitSocketList = [];
-var expoTokens = [];
+//var expoTokens = [];
 
 var kitData = {}
 var kitDataOk = {
@@ -181,15 +181,51 @@ io.on('connection', function(socket) {
     let listOfPhones = await kitsController.phonesFromKit(Object.keys(data)[0]);
     console.log(listOfPhones);
 
+    var expoTokens = [];
+
     for (i = 0; i < UserIdList.length; i++) {
       for (phone = 0; phone < listOfPhones.length; phone++) {
         if (UserIdList[i] === listOfPhones[phone].phoneId) {
           UserSocketList[i].emit('alert', {data});
+
+          expoTokens.push(listOfPhones[phone].phonePushToken);
+
           console.log('ALERT SENDED TO ', UserSocketList[i].id);
         }
       }
     }
 
+    let messages = [];
+
+    for (let pushToken of expoTokens) {
+      if (!Expo.isExpoPushToken(pushToken)) {
+        console.error(`Push token ${pushToken} is not a valid Expo push token`);
+        continue;
+      }
+      messages.push({
+        to: pushToken,
+        sound: 'default',
+        body: 'This is a test notification',
+        data: { data },
+      })
+    }
+
+    let chunks = expo.chunkPushNotifications(messages);
+    (async () => {
+      // Send the chunks to the Expo push notification service. There are
+      // different strategies you could use. A simple one is to send one chunk at a
+      // time, which nicely spreads the load out over time:
+      for (let chunk of chunks) {
+        try {
+          console.log('nani');
+          let receipts = await expo.sendPushNotificationsAsync(chunk);
+          console.log(receipts);
+          messages = [];
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    })();
 
   });
 
@@ -332,6 +368,7 @@ io.on('connection', function(socket) {
   /***********************************************************************PUSHNOTIFICATION!!***********************************************************************/
 
   //metodo de prueba para ingresar tokens al array expoTokens
+  /*
   socket.on('expologin', function(data) {
     for (i = 0; i < expoTokens.length; i++) {
       if (data.phoneNotification === expoTokens[i]) {
@@ -340,6 +377,7 @@ io.on('connection', function(socket) {
     }
     expoTokens.push(data);
   });
+
 
   let messages = [];
 
@@ -376,5 +414,6 @@ io.on('connection', function(socket) {
       }
     })();
   });
+  */
 
 });
