@@ -193,6 +193,7 @@ io.on('connection', function(socket) {
   //La aplicacion revisa la base de datos para saber si hay alertas
   socket.on('checkallstatus', async function(data) {
     //socket.emit('allkitsstatus', kitInitStatus)
+    console.log("Buscando kits de:",data);
     const kitsFromPhone = await kitsController.kitsFromPhone(data.phoneId);
     if(kitsFromPhone.length === 0){
       socket.emit('allkitsstatus', {"elements": false});
