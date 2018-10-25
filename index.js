@@ -175,11 +175,13 @@ io.on('connection', function(socket) {
     console.log(listOfPhones);
 
     for (i = 0; i < UserIdList.length; i++) {
-      if (UserIdList[i] === userId) {
+      if (UserIdList[i] === listOfPhones[0].phoneId) {
         UserSocketList[i].emit('alert', data);
         console.log('ALERT SENDED TO ', UserSocketList[i].id);
       }
     }
+
+
   });
 
   //La aplicacion revisa la base de datos para saber si hay alertas
