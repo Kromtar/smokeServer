@@ -88,7 +88,7 @@ var UserIdList = [];
 var UserSocketList = [];
 var KitIdList = [];
 var KitSocketList = [];
-//var expoTokens = [];
+var expoTokens = [];
 
 var kitData = {}
 var kitDataOk = {
@@ -181,7 +181,7 @@ io.on('connection', function(socket) {
     let listOfPhones = await kitsController.phonesFromKit(Object.keys(data)[0]);
     console.log(listOfPhones);
 
-    var expoTokens = [];
+    expoTokens = [];
 
     for (i = 0; i < UserIdList.length; i++) {
       for (phone = 0; phone < listOfPhones.length; phone++) {
