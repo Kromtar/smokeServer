@@ -91,7 +91,7 @@ function socket(server){
         }
         socket.emit('allkitsstatus', {
           "elements": true,
-          "kitsList": kitsList
+          "kitsList": [...kitsList]
         });
       }
     });
