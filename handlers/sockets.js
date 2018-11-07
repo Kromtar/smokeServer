@@ -57,7 +57,7 @@ function socket(server){
         expoTokens.push(listOfPhones[phone].phonePushToken);
       }
       //Envia las pushnotification mediante el manejador de EXPO
-      await sendPushNotification(expoTokens);
+      await sendPushNotification(expoTokens,data);
     });
 
     //Ve los sensores de un usuario

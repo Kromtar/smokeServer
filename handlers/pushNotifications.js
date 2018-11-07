@@ -1,7 +1,7 @@
 const { Expo } = require('expo-server-sdk');
 const expo = new Expo();
 
-async function sendPushNotification(tokenList){
+async function sendPushNotification(tokenList,data){
   let messages = [];
   for (let pushToken of tokenList) {
     if (!Expo.isExpoPushToken(pushToken)) {
