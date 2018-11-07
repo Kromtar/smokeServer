@@ -89,6 +89,7 @@ function socket(server){
             }
           });
         }
+        console.log(kitsList[0]);
         socket.emit('allkitsstatus', {
           "elements": true,
           "kitsList": [...kitsList]
