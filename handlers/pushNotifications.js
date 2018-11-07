@@ -11,7 +11,8 @@ async function sendPushNotification(tokenList,data){
     messages.push({
       to: pushToken,
       title: 'Smoke alert',
-      sound: true,
+      sound: 'default',
+      priority: 'high',
       body: 'Se quema la casa !!',
       data: { data },
     })
