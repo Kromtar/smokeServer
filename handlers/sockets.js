@@ -107,7 +107,7 @@ function socket(server){
             if (appsConnected[i].phoneid === listOfPhones[phone].phoneId) {
               //Envia respues a todos los celulares conectados actualmente que pertenecen al kit
               appsConnected[i].socket.emit('alertresponseconfirm', {
-                [kitStatus.kitId]: {
+                [data.kitID]: {
                     "kitName": "Nombre kit 1",
                     "kitStatus": "bien",
                     "sensor": {
