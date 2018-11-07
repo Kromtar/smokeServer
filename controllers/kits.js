@@ -1,44 +1,43 @@
 const mongoose = require('mongoose');
-
 const Kits = mongoose.model('kits');
 
 //Añade un telefono a un kit
 async function addPhoneToKit(data) {
-  console.log(data);
+  const {kitID, phoneId, phonePushToken} = data;
   try{
     //Ve si existe el kit
     const kit = await Kits.findOne({
-      kitId: data.kitID
+      kitId: kitID
     });
+    //Ccrea el kit
     if(!kit){
       const kit = new Kits({
-        kitId: data.kitID,
+        kitId: kitID,
         phonesSubs: [{
-          phoneId: data.phoneId,
-          phonePushToken: data.phonePushToken,
+          phoneId,
+          phonePushToken,
         }]
       });
-      const newKit = await kit.save();
-      console.log("Agregado nuevo kit y su celular", newKit);
+      await kit.save();
     }else{
       //Ve si el telefono ya esta inscrito al kit
       const kitWhitPhoneOK = await Kits.findOne({
-        kitId: data.kitID,
-        'phonesSubs.phoneId':data.phoneId
+        kitId: kitID,
+        'phonesSubs.phoneId':phoneId
       });
+      //Añade el telefono al kit
       if(!kitWhitPhoneOK){
-        const updatedKit = await Kits.update(
-          {kitId: data.kitID},
-          {kitId: data.kitID, $push:{phonesSubs:{
-            phoneId: data.phoneId,
-            phonePushToken: data.phonePushToken,
+        await Kits.update(
+          {kitId: kitID},
+          {kitId: kitID, $push:{phonesSubs:{
+            phoneId: phoneId,
+            phonePushToken,
           }}}
         );
-        console.log("Agregado nuevo celular al kit", updatedKit);
       }
     }
   } catch(err){
-    console.log('Catch', err);
+    console.log(err);
   }
 }
 
