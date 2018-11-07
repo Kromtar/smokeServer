@@ -70,9 +70,9 @@ function socket(server){
         socket.emit('allkitsstatus', {"elements": false});
       }else{
         //console.log(kitsFromPhone[0]);
-        kitsList = [];
+        kitsList = {};
         for(kit = 0; kit < kitsFromPhone.length; kit++){
-          kitsList.push({
+          Object.assign(kitsList, {
             [kitsFromPhone[kit].kitId]: {
                 "kitName": 'Nombre kit 1',
                 "kitStatus": kitsFromPhone[kit].kitStatus,
@@ -89,10 +89,9 @@ function socket(server){
             }
           });
         }
-        console.log(kitsList[0]);
         socket.emit('allkitsstatus', {
           "elements": true,
-          "kitsList": [...kitsList]
+          "kitsList": kitsList
         });
       }
     });
