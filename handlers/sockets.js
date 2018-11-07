@@ -182,7 +182,7 @@ function socket(server){
           appsConnected.splice(app, 1);
         }
       }
-      for (kit = 0; i < kitsConnected.length; kit++) {
+      for (kit = 0; kit < kitsConnected.length; kit++) {
         if (kitsConnected[kit].socket.id === socket.id) {
           kitsConnected.splice(kit, 1);
         }
