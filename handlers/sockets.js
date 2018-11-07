@@ -14,9 +14,9 @@ function socket(server){
     socket.on('applogin', function(data) {
       appsConnected.push({
         phoneid: data.phoneid,
-        socket: socket
+        socket
       });
-      console.log("Hay: " + appsConnected.length + "celulares conectados");
+      console.log("Hay: " + appsConnected.length + " celulares conectados");
     });
 
     //Registro de kits conectados
@@ -24,9 +24,9 @@ function socket(server){
       await kitsController.addNewKit(data);
       kitsConnected.push({
         kitId: data.kitID,
-        socket: socket
+        socket
       });
-      console.log("Hay: " + kitsConnected.length + "kits conectados");
+      console.log("Hay: " + kitsConnected.length + " kits conectados");
     });
 
     //TODO: ???
@@ -62,6 +62,7 @@ function socket(server){
 
     //Ve los sensores de un usuario
     //TODO: Se esta usando facker
+    //TODO: Remover elements, refactor app
     socket.on('checkallstatus', async function(data) {
       //console.log("Buscando kits de:",data);
       const kitsFromPhone = await kitsController.kitsFromPhone(data.phoneId);
@@ -69,25 +70,28 @@ function socket(server){
         socket.emit('allkitsstatus', {"elements": false});
       }else{
         //console.log(kitsFromPhone[0]);
+        kitsList = [];
+        for(kit = 0; kit < kitsFromPhone.length; kit++){
+          kitsList.push({
+            [kitsFromPhone[kit].kitId]: {
+                "kitName": 'Nombre kit 1',
+                "kitStatus": kitsFromPhone[kit].kitStatus,
+                "sensor": {
+                    "k1000s1": {
+                        "nombre": 'Sensor 1 del  kit 1',
+                        "status": 'bien'
+                    },
+                    "k1000s2": {
+                        "nombre": 'Sensor 2 del kit 1',
+                        "status": 'bien'
+                    }
+                }
+            }
+          });
+        }
         socket.emit('allkitsstatus', {
           "elements": true,
-          //Aqui tiene que ir un for porsi el user tiene mas de un kit
-          "kitsList": {
-              [kitsFromPhone[0].kitId]: {
-                  "kitName": 'Nombre kit 1',
-                  "kitStatus": kitsFromPhone[0].kitStatus,
-                  "sensor": {
-                      "k1000s1": {
-                          "nombre": 'Sensor 1 del  kit 1',
-                          "status": 'bien'
-                      },
-                      "k1000s2": {
-                          "nombre": 'Sensor 2 del kit 1',
-                          "status": 'bien'
-                      }
-                  }
-              }
-          }
+          "kitsList": kitsList
         });
       }
     });
@@ -187,8 +191,8 @@ function socket(server){
           kitsConnected.splice(kit, 1);
         }
       }
-      console.log("Hay: " + appsConnected.length + "celulares conectados");
-      console.log("Hay: " + kitsConnected.length + "kits conectados");
+      console.log("Hay: " + appsConnected.length + " celulares conectados");
+      console.log("Hay: " + kitsConnected.length + " kits conectados");
     });
 
   });
