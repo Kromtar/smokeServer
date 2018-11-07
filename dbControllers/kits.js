@@ -37,24 +37,25 @@ async function addPhoneToKit(data) {
       }
     }
   } catch(err){
-    console.log(err);
+    console.error(err);
   }
 }
 
 //Añade un kit
 async function addNewKit(data) {
-  console.log(data);
+  const {kitID} = data;
   try{
-    const kit = await Kits.findOne({kitId: data.kitID});
+    //Ve si existe el kit
+    const kit = await Kits.findOne({kitId: kitID});
     if(!kit){
+      //Añade el kit
       const kit = new Kits({
-        kitId: data.kitID,
+        kitId: kitID,
       });
-      const newKit = await kit.save();
-      console.log("Agregado nuevo kit", newKit);
+      await kit.save();
     }
   } catch(err){
-    console.log('Catch', err);
+    console.error(err);
   }
 }
 
@@ -64,20 +65,21 @@ async function phonesFromKit(kitID) {
     const kit = await Kits.findOne({kitId: kitID});
     return kit.phonesSubs;
   } catch(err){
-    console.log('Catch', err);
+    console.error(err);
   }
 }
 
 //Updatea el estado de un sensor
 //TODO: Implementar sensores
 async function updateKit(id,data){
+  const {kitStatus} = data;
   try{
-    const updatedKit = await Kits.update(
+    await Kits.update(
       {kitId: id},
-      {kitStatus: data.kitStatus}
+      {kitStatus}
     );
   } catch(err){
-    console.log('Catch', err);
+    console.error(err);
   }
 }
 
@@ -89,18 +91,20 @@ async function kitsFromPhone(phoneId){
     });
     return kits;
   } catch(err){
-    console.log('Catch', err);
+    console.error(err);
   }
 }
 
+//Ve el estado de un kit
 async function kitStatus(kitId){
+  const {kitId} = data;
   try{
     const kit = await Kits.findOne({
-      kitId: kitId
+      kitId
     });
     return kit;
   } catch(err){
-    console.log('Catch', err);
+    console.error(err);
   }
 }
 

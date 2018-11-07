@@ -1,88 +1,77 @@
-const { Expo } = require('expo-server-sdk');
-const expo = new Expo();
-const kitsController = require('../controllers/kits');
+const {sendPushNotification} = require('./pushNotifications')
+const kitsController = require('../dbControllers/kits');
 
 function socket(server){
-  var io = require('socket.io')(server);
+  const io = require('socket.io')(server);
 
   appsConnected = [];
   kitsConnected = [];
 
+  //Al ejecutarse una coneccion de socket.io
   io.on('connection', function(socket) {
 
+    //Registro de aplicaciones conectadas
     socket.on('applogin', function(data) {
       appsConnected.push({
         phoneid: data.phoneid,
         socket: socket
       });
+      console.log("Hay: " + appsConnected.length + "celulares conectados");
     });
 
+    //Registro de kits conectados
     socket.on('loginsensorkit', async function(data) {
       await kitsController.addNewKit(data);
       kitsConnected.push({
         kitId: data.kitID,
         socket: socket
       });
+      console.log("Hay: " + kitsConnected.length + "kits conectados");
     });
 
+    //TODO: ???
     socket.on('kitupdatestatus', async function(data){
       await kitsController.updateKit(Object.keys(data)[0], data[Object.keys(data)[0]]);
     });
 
-
+    //Alerta desde el kit
     socket.on('alertfromsensor', async function(data) {
+      //Actualiza el estado del kit en la DB
       await kitsController.updateKit(Object.keys(data)[0], data[Object.keys(data)[0]]);
+      //Busca los usuarios registrados a ese kit
       let listOfPhones = await kitsController.phonesFromKit(Object.keys(data)[0]);
-      console.log(listOfPhones);
-      expoTokens = [];
-      for (i = 0; i < appsConnected.length; i++) {
+      //console.log(listOfPhones);
+      //Busca cuales de esos usuarios estan conectados actualmente
+      for (app = 0; app < appsConnected.length; app++) {
         for (phone = 0; phone < listOfPhones.length; phone++) {
-          if (appsConnected[i].phoneid === listOfPhones[phone].phoneId) {
-            appsConnected[i].socket.emit('alert', {data});
-
-            expoTokens.push(listOfPhones[phone].phonePushToken);
-
-            console.log('ALERT SENDED TO ', appsConnected[i].socket.id);
+          if (appsConnected[app].phoneid === listOfPhones[phone].phoneId) {
+            //Envia alerta a usuarios conectados actualemente
+            appsConnected[app].socket.emit('alert', {data});
+            //console.log('ALERT SENDED TO ', appsConnected[i].socket.id);
           }
         }
       }
-      let messages = [];
-      for (let pushToken of expoTokens) {
-        if (!Expo.isExpoPushToken(pushToken)) {
-          console.error(`Push token ${pushToken} is not a valid Expo push token`);
-          continue;
-        }
-        messages.push({
-          to: pushToken,
-          sound: 'default',
-          body: 'This is a test notification',
-          data: { data },
-        })
+      //Registra los tokes de la push notifications de los usuarios registrados al kit
+      expoTokens = [];
+      for (phone = 0; phone < listOfPhones.length; phone++) {
+        expoTokens.push(listOfPhones[phone].phonePushToken);
       }
-      let chunks = expo.chunkPushNotifications(messages);
-      (async () => {
-        for (let chunk of chunks) {
-          try {
-            console.log('nani');
-            let receipts = await expo.sendPushNotificationsAsync(chunk);
-            console.log(receipts);
-            messages = [];
-          } catch (error) {
-            console.error(error);
-          }
-        }
-      })();
+      //Envia las pushnotification mediante el manejador de EXPO
+      await sendPushNotification(expoTokens);
     });
 
+    //Ve los sensores de un usuario
+    //TODO: Se esta usando facker
     socket.on('checkallstatus', async function(data) {
-      console.log("Buscando kits de:",data);
+      //console.log("Buscando kits de:",data);
       const kitsFromPhone = await kitsController.kitsFromPhone(data.phoneId);
       if(kitsFromPhone.length === 0){
         socket.emit('allkitsstatus', {"elements": false});
       }else{
-        console.log(kitsFromPhone[0]);
+        //console.log(kitsFromPhone[0]);
         socket.emit('allkitsstatus', {
           "elements": true,
+          //Aqui tiene que ir un for porsi el user tiene mas de un kit
           "kitsList": {
               [kitsFromPhone[0].kitId]: {
                   "kitName": 'Nombre kit 1',
@@ -103,19 +92,24 @@ function socket(server){
       }
     });
 
+    //Respuesta a la alerta desde una app
+    //TODO: Usa facker
+    //TODO: Añadir que pasa cuando es verdadero
     socket.on('alertresponse', async function(data) {
-      console.log('Alert Response From APP =', data);
+      //console.log('Alert Response From APP =', data);
       if (data.response === "falso") {
+        //Se actualiza el estado del kit en la DB
         await kitsController.updateKit(data.kitID, {kitStatus: "bien" });
-        const kitStatus = await kitsController.kitStatus(data.kitID);
-        let listOfPhones = await kitsController.phonesFromKit(data.kitID);
+        //Busca los celulares registrados a un kit
+        const listOfPhones = await kitsController.phonesFromKit(data.kitID);
         for (i = 0; i < appsConnected.length; i++) {
           for (phone = 0; phone < listOfPhones.length; phone++) {
             if (appsConnected[i].phoneid === listOfPhones[phone].phoneId) {
+              //Envia respues a todos los celulares conectados actualmente que pertenecen al kit
               appsConnected[i].socket.emit('alertresponseconfirm', {
                 [kitStatus.kitId]: {
                     "kitName": "Nombre kit 1",
-                    "kitStatus": kitStatus.kitStatus,
+                    "kitStatus": "bien",
                     "sensor": {
                         "k1000s1": {
                             "nombre": "Sensor 1 del  kit 1",
@@ -132,21 +126,27 @@ function socket(server){
           }
         }
       }
-      for (i = 0; i < kitsConnected.length; i++) {
-        if (kitsConnected[i].kitId === data.kitID) {
+      //AQUI VA LO QUE PASA SI LA ALERTA ES VERDADERA
+      //Actualiza el estado de los kits
+      for (kit = 0; kit < kitsConnected.length; kit++) {
+        if (kitsConnected[kit].kitId === data.kitID) {
           if (data.response === "falso") {
-            kitsConnected[i].socket.emit('responsefromserverfalse', data.response);
+            kitsConnected[kit].socket.emit('responsefromserverfalse', data.response);
           } else {
-            kitsConnected[i].socket.emit('responsefromservertrue', data.response);
+            kitsConnected[kit].socket.emit('responsefromservertrue', data.response);
           }
-          console.log('ALERT SENDED TO ', kitsConnected[i].socket.id);
+          //console.log('ALERT SENDED TO ', kitsConnected[i].socket.id);
         }
       }
     });
 
+    //QR enviado desde app (nuevo kit agragado a app)
+    //TODO: Usa facker
     socket.on('qr', async function(data) {
-      console.log(data);
+      //console.log(data);
+      //Añade el celular a un kit
       await kitsController.addPhoneToKit(data);
+      //Busca los kits del celular
       const kitsFromPhone = await kitsController.kitsFromPhone(data.phoneId);
       if(kitsFromPhone.length === 0){
         socket.emit('allkitsstatus', {"elements": false});
@@ -155,6 +155,7 @@ function socket(server){
         socket.emit('allkitsstatus', {
           "elements": true,
           "kitsList": {
+              //Aqui va un for en caso que tenga varios kit el celular
               [kitsFromPhone[0].kitId]: {
                   "kitName": 'Nombre kit 1',
                   "kitStatus": kitsFromPhone[0].kitStatus,
@@ -174,18 +175,20 @@ function socket(server){
       }
     });
 
+    //Se desconecta un socket
     socket.on('disconnect', function() {
-      for (i = 0; i < appsConnected.length; i++) {
-        if (appsConnected[i].socket.id === socket.id) {
-          appsConnected.splice(i, 1);
+      for (app = 0; app < appsConnected.length; app++) {
+        if (appsConnected[app].socket.id === socket.id) {
+          appsConnected.splice(app, 1);
         }
       }
-      for (i = 0; i < kitsConnected.length; i++) {
-        if (kitsConnected[i].socket.id === socket.id) {
-          kitsConnected.splice(i, 1);
+      for (kit = 0; i < kitsConnected.length; kit++) {
+        if (kitsConnected[kit].socket.id === socket.id) {
+          kitsConnected.splice(kit, 1);
         }
       }
-      console.log('user disconnected', socket.id);
+      console.log("Hay: " + appsConnected.length + "celulares conectados");
+      console.log("Hay: " + kitsConnected.length + "kits conectados");
     });
 
   });

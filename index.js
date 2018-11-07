@@ -13,7 +13,7 @@ require('./models/kits');
 const server = require('http').createServer(httpApp);
 
 //Inicia socket.io
-const {socket} = require('./sockets');
+const {socket} = require('./handlers/sockets');
 socket(server);
 
 //Control de acceso
