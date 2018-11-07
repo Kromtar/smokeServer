@@ -37,9 +37,11 @@ function socket(server){
     //Alerta desde el kit
     socket.on('alertfromsensor', async function(data) {
       //Actualiza el estado del kit en la DB
-      await kitsController.updateKit(Object.keys(data)[0], data[Object.keys(data)[0]]);
+      const kitId = Object.keys(data)[0];
+      const dataOfKit = data[Object.keys(data)[0]];
+      await kitsController.updateKit(kitId, dataOfKit);
       //Busca los usuarios registrados a ese kit
-      let listOfPhones = await kitsController.phonesFromKit(Object.keys(data)[0]);
+      let listOfPhones = await kitsController.phonesFromKit(kitId);
       //console.log(listOfPhones);
       //Busca cuales de esos usuarios estan conectados actualmente
       for (app = 0; app < appsConnected.length; app++) {
@@ -60,7 +62,7 @@ function socket(server){
       await sendPushNotification(expoTokens,data);
     });
 
-    //Ve los sensores de un usuario
+    //Ve los kits de un usuario
     //TODO: Se esta usando facker
     //TODO: Remover elements, refactor app
     socket.on('checkallstatus', async function(data) {
@@ -69,7 +71,97 @@ function socket(server){
       if(kitsFromPhone.length === 0){
         socket.emit('allkitsstatus', {"elements": false});
       }else{
-        //console.log(kitsFromPhone[0]);
+        //Crea la lista de los kits para enviar
+        kitsList = {};
+        for(kit = 0; kit < kitsFromPhone.length; kit++){
+          Object.assign(kitsList, {
+            [kitsFromPhone[kit].kitId]: {
+                "kitName": 'Nombre kit 1',
+                "kitStatus": kitsFromPhone[kit].kitStatus,
+                "sensor": {
+                    "k1000s1": {
+                        "nombre": 'Sensor 1 del  kit 1',
+                        "status": 'bien'
+                    },
+                    "k1000s2": {
+                        "nombre": 'Sensor 2 del kit 1',
+                        "status": 'bien'
+                    }
+                }
+            }
+          });
+        }
+        socket.emit('allkitsstatus', {
+          "elements": true,
+          kitsList
+        });
+      }
+    });
+
+    //Respuesta a la alerta desde una app
+    //TODO: Usa facker
+    //TODO: Añadir que pasa cuando es verdadero
+    socket.on('alertresponse', async function(data) {
+      const { response, kitID } = data;
+      //console.log('Alert Response From APP =', data);
+      if (response === "falso") {
+        //Se actualiza el estado del kit en la DB
+        await kitsController.updateKit(kitID, {kitStatus: "bien"});
+        //Busca los celulares registrados a un kit
+        const listOfPhones = await kitsController.phonesFromKit(kitID);
+        for (app = 0; app < appsConnected.length; app++) {
+          for (phone = 0; phone < listOfPhones.length; phone++) {
+            if (appsConnected[app].phoneid === listOfPhones[phone].phoneId) {
+              //Envia respues a todos los celulares conectados actualmente que pertenecen al kit
+              appsConnected[app].socket.emit('alertresponseconfirm', {
+                [kitID]: {
+                    "kitName": "Nombre kit 1",
+                    "kitStatus": "bien",
+                    "sensor": {
+                        "k1000s1": {
+                            "nombre": "Sensor 1 del  kit 1",
+                            "status": "bien"
+                        },
+                        "k1000s2": {
+                            "nombre": "Sensor 2 del kit 1",
+                            "status": "bien"
+                        }
+                    }
+                }
+              });
+            }
+          }
+        }
+      }
+      //AQUI VA LO QUE PASA SI LA ALERTA ES VERDADERA
+      //Actualiza el estado de los kits
+      for (kit = 0; kit < kitsConnected.length; kit++) {
+        if (kitsConnected[kit].kitId === kitID) {
+          //En caso que sea una alerta false
+          if (response === "falso") {
+            kitsConnected[kit].socket.emit('responsefromserverfalse', response);
+          }
+          //En caso que sea una alerta verdadera
+          else {
+            kitsConnected[kit].socket.emit('responsefromservertrue', response);
+          }
+          //console.log('ALERT SENDED TO ', kitsConnected[i].socket.id);
+        }
+      }
+    });
+
+    //QR enviado desde app (nuevo kit agragado a app)
+    //TODO: Usa facker
+    socket.on('qr', async function(data) {
+      //console.log(data);
+      //Añade el celular a un kit
+      await kitsController.addPhoneToKit(data);
+      //Busca los kits del celular
+      const kitsFromPhone = await kitsController.kitsFromPhone(data.phoneId);
+      if(kitsFromPhone.length === 0){
+        socket.emit('allkitsstatus', {"elements": false});
+      }else{
+        //Crea la lista de los kits para enviar
         kitsList = {};
         for(kit = 0; kit < kitsFromPhone.length; kit++){
           Object.assign(kitsList, {
@@ -92,89 +184,6 @@ function socket(server){
         socket.emit('allkitsstatus', {
           "elements": true,
           "kitsList": kitsList
-        });
-      }
-    });
-
-    //Respuesta a la alerta desde una app
-    //TODO: Usa facker
-    //TODO: Añadir que pasa cuando es verdadero
-    socket.on('alertresponse', async function(data) {
-      //console.log('Alert Response From APP =', data);
-      if (data.response === "falso") {
-        //Se actualiza el estado del kit en la DB
-        await kitsController.updateKit(data.kitID, {kitStatus: "bien" });
-        //Busca los celulares registrados a un kit
-        const listOfPhones = await kitsController.phonesFromKit(data.kitID);
-        for (i = 0; i < appsConnected.length; i++) {
-          for (phone = 0; phone < listOfPhones.length; phone++) {
-            if (appsConnected[i].phoneid === listOfPhones[phone].phoneId) {
-              //Envia respues a todos los celulares conectados actualmente que pertenecen al kit
-              appsConnected[i].socket.emit('alertresponseconfirm', {
-                [data.kitID]: {
-                    "kitName": "Nombre kit 1",
-                    "kitStatus": "bien",
-                    "sensor": {
-                        "k1000s1": {
-                            "nombre": "Sensor 1 del  kit 1",
-                            "status": "bien"
-                        },
-                        "k1000s2": {
-                            "nombre": "Sensor 2 del kit 1",
-                            "status": "bien"
-                        }
-                    }
-                }
-              });
-            }
-          }
-        }
-      }
-      //AQUI VA LO QUE PASA SI LA ALERTA ES VERDADERA
-      //Actualiza el estado de los kits
-      for (kit = 0; kit < kitsConnected.length; kit++) {
-        if (kitsConnected[kit].kitId === data.kitID) {
-          if (data.response === "falso") {
-            kitsConnected[kit].socket.emit('responsefromserverfalse', data.response);
-          } else {
-            kitsConnected[kit].socket.emit('responsefromservertrue', data.response);
-          }
-          //console.log('ALERT SENDED TO ', kitsConnected[i].socket.id);
-        }
-      }
-    });
-
-    //QR enviado desde app (nuevo kit agragado a app)
-    //TODO: Usa facker
-    socket.on('qr', async function(data) {
-      //console.log(data);
-      //Añade el celular a un kit
-      await kitsController.addPhoneToKit(data);
-      //Busca los kits del celular
-      const kitsFromPhone = await kitsController.kitsFromPhone(data.phoneId);
-      if(kitsFromPhone.length === 0){
-        socket.emit('allkitsstatus', {"elements": false});
-      }else{
-        console.log(kitsFromPhone[0]);
-        socket.emit('allkitsstatus', {
-          "elements": true,
-          "kitsList": {
-              //Aqui va un for en caso que tenga varios kit el celular
-              [kitsFromPhone[0].kitId]: {
-                  "kitName": 'Nombre kit 1',
-                  "kitStatus": kitsFromPhone[0].kitStatus,
-                  "sensor": {
-                      "k1000s1": {
-                          "nombre": 'Sensor 1 del  kit 1',
-                          "status": 'bien'
-                      },
-                      "k1000s2": {
-                          "nombre": 'Sensor 2 del kit 1',
-                          "status": 'bien'
-                      }
-                  }
-              }
-          }
         });
       }
     });
