@@ -159,7 +159,7 @@ function socket(server){
     //QR enviado desde app (nuevo kit agragado a app)
     //TODO: Usa facker
     socket.on('qr', async function(data) {
-      //console.log(data);
+      console.log(data);
       //Añade el celular a un kit
       await kitsController.addPhoneToKit(data);
       //Busca los kits del celular
