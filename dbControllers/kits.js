@@ -28,10 +28,10 @@ async function addPhoneToKit(data) {
       });
       //Añade el telefono al kit
       if(!kitWhitPhoneOK){
-        await Kits.update(
+        await Kits.updateOne(
           {kitId: kitID},
           {kitId: kitID, $push:{phonesSubs:{
-            phoneId: phoneId,
+            phoneId,
             phonePushToken,
             phoneNumber
           }}}
@@ -45,14 +45,14 @@ async function addPhoneToKit(data) {
 
 //Añade un kit
 async function addNewKit(data) {
-  const {kitID} = data;
+  const {kitId} = data;
   try{
     //Ve si existe el kit
-    const kit = await Kits.findOne({kitId: kitID});
+    const kit = await Kits.findOne({kitId});
     if(!kit){
       //Añade el kit
       const kit = new Kits({
-        kitId: kitID,
+        kitId,
       });
       await kit.save();
     }
@@ -62,9 +62,9 @@ async function addNewKit(data) {
 }
 
 //Busca todos los telefonos de un determinado kit
-async function phonesFromKit(kitID) {
+async function phonesFromKit(kitId) {
   try{
-    const kit = await Kits.findOne({kitId: kitID});
+    const kit = await Kits.findOne({kitId});
     return kit.phonesSubs;
   } catch(err){
     console.error(err);
@@ -73,11 +73,11 @@ async function phonesFromKit(kitID) {
 
 //Updatea el estado de un sensor
 //TODO: Implementar sensores
-async function updateKit(id,data){
+async function updateKit(kitId,data){
   const {kitStatus} = data;
   try{
-    await Kits.update(
-      {kitId: id},
+    await Kits.updateOne(
+      {kitId},
       {kitStatus}
     );
   } catch(err){
@@ -98,7 +98,7 @@ async function kitsFromPhone(phoneId){
 }
 
 //Ve el estado de un kit
-async function kitStatus(kitId){
+async function kitStatus(data){
   const {kitId} = data;
   try{
     const kit = await Kits.findOne({
