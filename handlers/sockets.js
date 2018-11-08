@@ -24,7 +24,7 @@ function socket(server){
     socket.on('loginsensorkit', async function(data) {
       await kitsController.addNewKit(data);
       kitsConnected.push({
-        kitId: data.kitID,
+        kitId: data.kitId,
         socket
       });
       console.log("Hay: " + kitsConnected.length + " kits conectados");
