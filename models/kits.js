@@ -3,8 +3,8 @@ const { Schema } = mongoose;
 
 const phonesSchema = new Schema({
   phoneId: String,
-  kitStatus: { type: String, default: '' },
-  phoneNumber: String,
+  phonePushToken: String,
+  phoneNumber: { type: String, default: '' },
 });
 
 const kitsSchema = new Schema({
