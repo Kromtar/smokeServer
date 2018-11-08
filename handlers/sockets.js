@@ -1,5 +1,6 @@
-const {sendPushNotification} = require('./pushNotifications')
+const {sendPushNotification} = require('./pushNotifications');
 const kitsController = require('../dbControllers/kits');
+const {callPhone} = require('./twilio');
 
 function socket(server){
   const io = require('socket.io')(server);
@@ -60,6 +61,11 @@ function socket(server){
       }
       //Envia las pushnotification mediante el manejador de EXPO
       await sendPushNotification(expoTokens,data);
+      //Realiza una llamada al primer celular registrado al kit
+      //TODO: Que se llame a todos los celulares
+      if(listOfPhones[0].phoneNumber !== ''){
+        callPhone(listOfPhones[0].phoneNumber);
+      }
     });
 
     //Ve los kits de un usuario

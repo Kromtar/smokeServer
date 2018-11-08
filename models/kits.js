@@ -3,12 +3,13 @@ const { Schema } = mongoose;
 
 const phonesSchema = new Schema({
   phoneId: String,
-  phonePushToken: String,
+  kitStatus: { type: String, default: '' },
+  phoneNumber: String,
 });
 
 const kitsSchema = new Schema({
   kitId: String,
-  kitStatus: String,
+  kitStatus: { type: String, default: 'bien' },
   phonesSubs: [phonesSchema]
 });
 

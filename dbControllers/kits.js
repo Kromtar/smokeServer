@@ -3,7 +3,7 @@ const Kits = mongoose.model('kits');
 
 //Añade un telefono a un kit
 async function addPhoneToKit(data) {
-  const {kitID, phoneId, phonePushToken} = data;
+  const {kitID, phoneId, phonePushToken, phoneNumber} = data;
   try{
     //Ve si existe el kit
     const kit = await Kits.findOne({
@@ -16,6 +16,7 @@ async function addPhoneToKit(data) {
         phonesSubs: [{
           phoneId,
           phonePushToken,
+          phoneNumber
         }]
       });
       await kit.save();
@@ -32,6 +33,7 @@ async function addPhoneToKit(data) {
           {kitId: kitID, $push:{phonesSubs:{
             phoneId: phoneId,
             phonePushToken,
+            phoneNumber
           }}}
         );
       }
