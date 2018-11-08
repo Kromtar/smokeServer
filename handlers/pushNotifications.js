@@ -1,6 +1,10 @@
 const { Expo } = require('expo-server-sdk');
 const expo = new Expo();
 
+//TODO:
+//Ver caso de IOs
+//Se puede añadir sonido que vibre desde andriod 8.0 (ver channelId notifiacion string)
+//Configrar icono desde app.json, tambien color y otros
 async function sendPushNotification(tokenList,data){
   let messages = [];
   for (let pushToken of tokenList) {
