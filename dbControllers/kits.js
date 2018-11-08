@@ -3,16 +3,16 @@ const Kits = mongoose.model('kits');
 
 //Añade un telefono a un kit
 async function addPhoneToKit(data) {
-  const {kitID, phoneId, phonePushToken, phoneNumber} = data;
+  const {kitId, phoneId, phonePushToken, phoneNumber} = data;
   try{
     //Ve si existe el kit
     const kit = await Kits.findOne({
-      kitId: kitID
+      kitId
     });
     //Ccrea el kit
     if(!kit){
       const kit = new Kits({
-        kitId: kitID,
+        kitId,
         phonesSubs: [{
           phoneId,
           phonePushToken,
@@ -23,14 +23,14 @@ async function addPhoneToKit(data) {
     }else{
       //Ve si el telefono ya esta inscrito al kit
       const kitWhitPhoneOK = await Kits.findOne({
-        kitId: kitID,
+        kitId,
         'phonesSubs.phoneId':phoneId
       });
       //Añade el telefono al kit
       if(!kitWhitPhoneOK){
         await Kits.updateOne(
-          {kitId: kitID},
-          {kitId: kitID, $push:{phonesSubs:{
+          {kitId},
+          {kitId, $push:{phonesSubs:{
             phoneId,
             phonePushToken,
             phoneNumber

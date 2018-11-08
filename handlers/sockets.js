@@ -108,19 +108,19 @@ function socket(server){
     //TODO: Usa facker
     //TODO: Añadir que pasa cuando es verdadero
     socket.on('alertresponse', async function(data) {
-      const { response, kitID } = data;
+      const { response, kitId } = data;
       //console.log('Alert Response From APP =', data);
       if (response === "falso") {
         //Se actualiza el estado del kit en la DB
-        await kitsController.updateKit(kitID, {kitStatus: "bien"});
+        await kitsController.updateKit(kitId, {kitStatus: "bien"});
         //Busca los celulares registrados a un kit
-        const listOfPhones = await kitsController.phonesFromKit(kitID);
+        const listOfPhones = await kitsController.phonesFromKit(kitId);
         for (app = 0; app < appsConnected.length; app++) {
           for (phone = 0; phone < listOfPhones.length; phone++) {
             if (appsConnected[app].phoneid === listOfPhones[phone].phoneId) {
               //Envia respues a todos los celulares conectados actualmente que pertenecen al kit
               appsConnected[app].socket.emit('alertresponseconfirm', {
-                [kitID]: {
+                [kitId]: {
                     "kitName": "Nombre kit 1",
                     "kitStatus": "bien",
                     "sensor": {
@@ -142,7 +142,7 @@ function socket(server){
       //AQUI VA LO QUE PASA SI LA ALERTA ES VERDADERA
       //Actualiza el estado de los kits
       for (kit = 0; kit < kitsConnected.length; kit++) {
-        if (kitsConnected[kit].kitId === kitID) {
+        if (kitsConnected[kit].kitId === kitId) {
           //En caso que sea una alerta false
           if (response === "falso") {
             kitsConnected[kit].socket.emit('responsefromserverfalse', response);
