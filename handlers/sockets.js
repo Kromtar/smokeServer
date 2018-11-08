@@ -69,7 +69,7 @@ function socket(server){
       //console.log("Buscando kits de:",data);
       const kitsFromPhone = await kitsController.kitsFromPhone(data.phoneId);
       if(kitsFromPhone.length === 0){
-        socket.emit('allkitsstatus', {});
+        socket.emit('allkitsstatus', {"elements": false});
       }else{
         //Crea la lista de los kits para enviar
         kitsList = {};
@@ -159,7 +159,7 @@ function socket(server){
       //Busca los kits del celular
       const kitsFromPhone = await kitsController.kitsFromPhone(data.phoneId);
       if(kitsFromPhone.length === 0){
-        socket.emit('allkitsstatus', {});
+        socket.emit('allkitsstatus', {"elements": false});
       }else{
         //Crea la lista de los kits para enviar
         kitsList = {};
