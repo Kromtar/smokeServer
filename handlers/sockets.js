@@ -194,7 +194,7 @@ function socket(server){
     });
 
     //Remueve un telefono de un kit
-    socket.on('removeKit', async function(data){
+    socket.on('removekit', async function(data){
       //Remueve el kit
       await kitsController.removePhoneFromKit(data);
       //Re-envia todos los kit al usuario
