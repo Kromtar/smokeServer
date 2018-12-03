@@ -84,16 +84,6 @@ function socket(server){
             [kitsFromPhone[kit].kitId]: {
                 "kitName": 'Nombre kit 1',
                 "kitStatus": kitsFromPhone[kit].kitStatus,
-                "sensor": {
-                    "k1000s1": {
-                        "nombre": 'Sensor 1 del  kit 1',
-                        "status": 'bien'
-                    },
-                    "k1000s2": {
-                        "nombre": 'Sensor 2 del kit 1',
-                        "status": 'bien'
-                    }
-                }
             }
           });
         }
@@ -123,16 +113,6 @@ function socket(server){
                 [kitId]: {
                     "kitName": "Nombre kit 1",
                     "kitStatus": "bien",
-                    "sensor": {
-                        "k1000s1": {
-                            "nombre": "Sensor 1 del  kit 1",
-                            "status": "bien"
-                        },
-                        "k1000s2": {
-                            "nombre": "Sensor 2 del kit 1",
-                            "status": "bien"
-                        }
-                    }
                 }
               });
             }
@@ -173,16 +153,6 @@ function socket(server){
             [kitsFromPhone[kit].kitId]: {
                 "kitName": 'Nombre kit 1',
                 "kitStatus": kitsFromPhone[kit].kitStatus,
-                "sensor": {
-                    "k1000s1": {
-                        "nombre": 'Sensor 1 del  kit 1',
-                        "status": 'bien'
-                    },
-                    "k1000s2": {
-                        "nombre": 'Sensor 2 del kit 1',
-                        "status": 'bien'
-                    }
-                }
             }
           });
         }
@@ -209,16 +179,6 @@ function socket(server){
             [kitsFromPhone[kit].kitId]: {
                 "kitName": 'Nombre kit 1',
                 "kitStatus": kitsFromPhone[kit].kitStatus,
-                "sensor": {
-                    "k1000s1": {
-                        "nombre": 'Sensor 1 del  kit 1',
-                        "status": 'bien'
-                    },
-                    "k1000s2": {
-                        "nombre": 'Sensor 2 del kit 1',
-                        "status": 'bien'
-                    }
-                }
             }
           });
         }
