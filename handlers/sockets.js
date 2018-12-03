@@ -193,6 +193,42 @@ function socket(server){
       }
     });
 
+    //Remueve un telefono de un kit
+    socket.on('removeKit', async function(data){
+      //Remueve el kit
+      await kitsController.removePhoneFromKit(data);
+      //Re-envia todos los kit al usuario
+      const kitsFromPhone = await kitsController.kitsFromPhone(data.phoneId);
+      if(kitsFromPhone.length === 0){
+        socket.emit('allkitsstatus', {"elements": false});
+      }else{
+        //Crea la lista de los kits para enviar
+        kitsList = {};
+        for(kit = 0; kit < kitsFromPhone.length; kit++){
+          Object.assign(kitsList, {
+            [kitsFromPhone[kit].kitId]: {
+                "kitName": 'Nombre kit 1',
+                "kitStatus": kitsFromPhone[kit].kitStatus,
+                "sensor": {
+                    "k1000s1": {
+                        "nombre": 'Sensor 1 del  kit 1',
+                        "status": 'bien'
+                    },
+                    "k1000s2": {
+                        "nombre": 'Sensor 2 del kit 1',
+                        "status": 'bien'
+                    }
+                }
+            }
+          });
+        }
+        socket.emit('allkitsstatus', {
+          "elements": true,
+          kitsList
+        });
+      }
+    });
+
     //Se desconecta un socket
     socket.on('disconnect', function() {
       for (app = 0; app < appsConnected.length; app++) {

@@ -26,11 +26,12 @@ async function addPhoneToKit(data) {
         kitId,
         'phonesSubs.phoneId':phoneId
       });
+
       //Añade el telefono al kit
       if(!kitWhitPhoneOK){
         await Kits.updateOne(
           {kitId},
-          {kitId, $push:{phonesSubs:{
+          {$push:{phonesSubs:{
             phoneId,
             phonePushToken,
             phoneNumber
@@ -110,11 +111,27 @@ async function kitStatus(data){
   }
 }
 
+//Quita un telefono de un kit
+async function removePhoneFromKit(data){
+  const {kitId, phoneId} = data;
+  try{
+    const kitRemovePhone = await Kits.updateOne(
+      {kitId},
+      {$pull:{phonesSubs:{
+        phoneId
+      }}}
+    );
+  } catch(err){
+    console.error(err);
+  }
+}
+
 module.exports = {
   addPhoneToKit,
   addNewKit,
   phonesFromKit,
   updateKit,
   kitsFromPhone,
-  kitStatus
+  kitStatus,
+  removePhoneFromKit
 };
