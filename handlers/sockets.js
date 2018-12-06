@@ -64,6 +64,7 @@ function socket(server){
       //Realiza una llamada al primer celular registrado al kit
       //TODO: Que se llame a todos los celulares
       if(listOfPhones[0].phoneNumber !== ''){
+        console.log(listOfPhones.length);
         callPhone(listOfPhones[listOfPhones.length - 1].phoneNumber);
       }
     });
