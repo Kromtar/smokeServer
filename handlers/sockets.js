@@ -63,8 +63,8 @@ function socket(server){
       await sendPushNotification(expoTokens,data);
       //Realiza una llamada al primer celular registrado al kit
       //TODO: Que se llame a todos los celulares
-      if(listOfPhones[0].phoneNumber !== ''){
-        callPhone(listOfPhones[0].phoneNumber);
+      if(listOfPhones[listOfPhones.length - 1].phoneNumber !== ''){
+        callPhone(listOfPhones[listOfPhones.length - 1].phoneNumber);
       }
     });
 
