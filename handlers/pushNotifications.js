@@ -19,7 +19,7 @@ async function sendPushNotification(tokenList,data){
       title: 'Smoke alert',
       sound: 'default',
       priority: 'high',
-      body: 'Se quema la casa !!',
+      body: 'Alerta de FUEGO !!!',
       data: { data },
     })
   }
